@@ -28,7 +28,7 @@ const EditProfileForm = () => {
     if (formData.profilePicture) {
       data.append('profilePicture', formData.profilePicture);
     }
-    
+    console.log(data);
     try {
       const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', data, {
         withCredentials: true,

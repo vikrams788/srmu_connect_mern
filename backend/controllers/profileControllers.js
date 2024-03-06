@@ -5,17 +5,13 @@ exports.createUserProfile = async (req, res) => {
         const userId = req.user.userId;
         const userProfileData = req.body;
         const userProfileFile = req.file;
+        console.log("user profile file", userProfileFile);
 
-        let userProfile = await Profile.findOne({ createdBy: userId });
-
-        if (!userProfile) {
-            userProfile = new Profile({
-            createdBy: userId,
-            ...userProfileData,
-            });
-        } else {
-            userProfile = Object.assign(userProfile, userProfileData);
-        }
+        const userProfile = new Profile({
+        createdBy: userId,
+        ...userProfileData,
+        });
+        console.log(userProfile);
 
         if (userProfileFile) {
             const result = await cloudinary.uploader.upload(userProfileFile.path);
