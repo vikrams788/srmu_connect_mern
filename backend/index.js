@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+// const { upload } = require('./middleware/multerMiddleware');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,6 +17,7 @@ app.use(cors({
     credentials: true,
 }));
 app.use(cookieParser());
+// app.use(upload.single('profilePicture'));
 
 app.use('/api', userRoutes);
 app.use('/api', profileRoutes);

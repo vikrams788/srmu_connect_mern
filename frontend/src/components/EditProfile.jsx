@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Header from '../partials/Header';
 import Footer from '../partials/Footer';
 import LeftComponent from './LeftComponent';
 import RightComponent from './RightComponent';
+import { useNavigate } from 'react-router-dom';
 
 const EditProfileForm = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     fullName: '',
     bio: '',
@@ -13,8 +16,28 @@ const EditProfileForm = () => {
     course: '',
     rollNo: '',
     semester: '',
-    profilePicture: null
+    profilePicture: ''
   });
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Credentials': true,
+          },
+        });
+        const userProfile = response.data;
+        setFormData(userProfile);
+      } catch (error) {
+        console.error('Error fetching user profile:', error.message);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,16 +53,28 @@ const EditProfileForm = () => {
     }
     console.log(data);
     try {
-      const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', data, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Credentials': true,
-        },
-      });
-      console.log('Profile created successfully', response.data);
+      let response;
+      if (formData.fullName) {
+        response = await axios.put(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', data, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Access-Control-Allow-Credentials': true,
+          },
+        });
+      } else {
+        response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', data, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Access-Control-Allow-Credentials': true,
+          },
+        });
+      }
+      console.log('Profile saved successfully', response.data);
+      navigate('/profile');
     } catch (error) {
-      console.error('Error creating profile:', error.message);
+      console.error('Error saving profile:', error.message);
     }
   };
 
@@ -57,14 +92,14 @@ const EditProfileForm = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <div className="container my-auto flex-grow mx-auto mt-4">
-        <div className="md:flex md:justify-center">
-          <div className="md:w-1/4">
+        <div className="md:flex md:justify-evenly">
+          <div className="md:w-1/3 hidden md:block">
             <LeftComponent />
           </div>
-          <div className="md:w-1/2">
+          <div className="md:w-2/3">
             <div className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
               <h2 className="text-2xl font-bold mb-4 text-center">Edit Profile</h2>
-              <form onSubmit={handleSubmit} className='flex flex-col'>
+              <form onSubmit={handleSubmit} className='flex flex-col' encType='multipart/form-data'>
                 <div className="mb-4">
                   <label htmlFor="fullName" className="block text-gray-700 text-sm font-semibold mb-2">Full Name</label>
                   <input type="text" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" name="fullName" placeholder="Enter your full name" value={formData.fullName} onChange={handleChange} />
@@ -97,7 +132,7 @@ const EditProfileForm = () => {
               </form>
             </div>
           </div>
-          <div className="md:w-1/4">
+          <div className="md:w-1/3 hidden md:block">
             <RightComponent />
           </div>
         </div>
