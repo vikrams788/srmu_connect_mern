@@ -67,7 +67,7 @@ const Profile = () => {
                 <p><span className="font-semibold">Semester:</span> {userData.semester}</p>
               </div>
             )}
-            <h1 className="text-2xl font-bold mb-4">{userData.fullName.split(' ')[0]}&apos;s Posts</h1>
+            <h1 className="text-2xl font-bold mb-4">{userData?.fullName.split(' ')[0]}&apos;s Posts</h1>
             <div>
               {/* {userPosts.map((post) => (
                 <div key={post.id} className="bg-white shadow-md p-6 rounded-lg mb-4">

@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+const postRoutes = require('./routes/postRoutes');
 // const { upload } = require('./middleware/multerMiddleware');
 
 app.use(bodyParser.json());
@@ -21,6 +22,7 @@ app.use(cookieParser());
 
 app.use('/api', userRoutes);
 app.use('/api', profileRoutes);
+app.use('/api', postRoutes);
 
 db.connect();
 
