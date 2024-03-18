@@ -3,27 +3,26 @@ const cloudinary = require('cloudinary').v2;
 
 exports.createPost = async (req, res) => {
     try {
-        const { text, link, embeddedVideo } = req.body;
+        const { text, link, postType, embeddedVideo } = req.body;
         let imageUrl, videoUrl;
         const userId = req.user.userId;
 
-        if (req.file && req.file.fieldname === 'image') {
-        const imageUploadResponse = await cloudinary.uploader.upload(req.file.path);
-        imageUrl = imageUploadResponse.secure_url;
-        }
-
-        if (req.file && req.file.fieldname === 'video') {
-        const videoUploadResponse = await cloudinary.uploader.upload(req.file.path, { resource_type: 'video' });
-        videoUrl = videoUploadResponse.secure_url;
+        if (postType === 'image-option' && req.files.image) {
+            const imageUploadResponse = await cloudinary.uploader.upload(req.files.image[0].path);
+            imageUrl = imageUploadResponse.secure_url;
+        } else if (postType === 'video-option' && req.files.video) {
+            const videoUploadResponse = await cloudinary.uploader.upload(req.files.video[0].path, { resource_type: 'video' });
+            videoUrl = videoUploadResponse.secure_url;
         }
 
         const newPost = new Post({
-        createdBy: userId,
-        text,
-        link,
-        image: imageUrl,
-        video: videoUrl,
-        embeddedVideo
+            createdBy: userId,
+            text,
+            link,
+            image: imageUrl,
+            video: videoUrl,
+            postType,
+            embeddedVideo
         });
 
         await newPost.save();
@@ -72,27 +71,26 @@ exports.getPostById = async (req, res) => {
 exports.editPost = async (req, res) => {
     try {
         const postId = req.params.id;
-        const { text, link, embeddedVideo } = req.body;
+        const { text, link, postType } = req.body;
         let imageUrl, videoUrl;
 
-        if (req.file && req.file.fieldname === 'image') {
-        const imageUploadResponse = await cloudinary.uploader.upload(req.file.path);
-        imageUrl = imageUploadResponse.secure_url;
+        if (postType === 'image-option' && req.files.image) {
+            const imageUploadResponse = await cloudinary.uploader.upload(req.files.image[0].path);
+            imageUrl = imageUploadResponse.secure_url;
         }
-
-        if (req.file && req.file.fieldname === 'video') {
-        const videoUploadResponse = await cloudinary.uploader.upload(req.file.path, { resource_type: 'video' });
-        videoUrl = videoUploadResponse.secure_url;
+        else if (postType === 'video-option' && req.files.video) {
+            const videoUploadResponse = await cloudinary.uploader.upload(req.files.video[0].path, { resource_type: 'video' });
+            videoUrl = videoUploadResponse.secure_url;
         }
 
         const existingPost = await Post.findById(postId);
         if (!existingPost) {
-        return res.status(404).json({ message: 'Post not found' });
+            return res.status(404).json({ message: 'Post not found' });
         }
 
         existingPost.text = text || existingPost.text;
         existingPost.link = link || existingPost.link;
-        existingPost.embeddedVideo = embeddedVideo || existingPost.embeddedVideo;
+        existingPost.postType = postType || existingPost.postType;
         existingPost.image = imageUrl || existingPost.image;
         existingPost.video = videoUrl || existingPost.video;
 

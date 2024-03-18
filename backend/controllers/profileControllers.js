@@ -80,7 +80,7 @@ exports.getUserProfile = async (req, res) => {
 
 exports.getAnotherUsersProfile = async (req, res) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const userProfile = await Profile.findOne({createdBy: userId});
         if (!userProfile) {
             return res.status(404).json({ message: 'User profile not found' });

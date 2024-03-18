@@ -4,21 +4,21 @@ import Footer from '../partials/Footer';
 import LeftComponent from './LeftComponent';
 import RightComponent from './RightComponent';
 import axios from 'axios';
+import Post from './Post';
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
-//   const [userPosts, setUserPosts] = useState([]);
-//   const [profilePicture, setProfilePicture] = useState('');
+  const [userPosts, setUserPosts] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/profile`, {
-            withCredentials: true,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': true,
-            },
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Credentials': true,
+          },
         });
         setUserData(response.data);
       } catch (error) {
@@ -26,23 +26,23 @@ const Profile = () => {
       }
     };
 
-    // const fetchUserPosts = async () => {
-    //   try {
-    //     const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/posts`, {
-    //         withCredentials: true,
-    //         headers: {
-    //             'Content-Type': 'multipart/form-data',
-    //             'Access-Control-Allow-Credentials': true,
-    //         },
-    //     });
-    //     setUserPosts(response.data);
-    //   } catch (error) {
-    //     console.error('Error fetching user posts:', error);
-    //   }
-    // };
+    const fetchUserPosts = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/my-posts`, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Credentials': true,
+          },
+        });
+        setUserPosts(response.data);
+      } catch (error) {
+        console.error('Error fetching user posts:', error);
+      }
+    };
 
     fetchUserData();
-    // fetchUserPosts();
+    fetchUserPosts();
   }, []);
 
   return (
@@ -69,12 +69,9 @@ const Profile = () => {
             )}
             <h1 className="text-2xl font-bold mb-4">{userData?.fullName.split(' ')[0]}&apos;s Posts</h1>
             <div>
-              {/* {userPosts.map((post) => (
-                <div key={post.id} className="bg-white shadow-md p-6 rounded-lg mb-4">
-                  <h2 className="text-xl font-bold mb-2">{post.title}</h2>
-                  <p>{post.content}</p>
-                </div>
-              ))} */}
+              {userPosts.map((post) => (
+                <Post key={post._id} post={post} />
+              ))}
             </div>
           </div>
           <div className="w-full md:w-1/6 hidden md:block">

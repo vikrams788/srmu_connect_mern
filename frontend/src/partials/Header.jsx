@@ -21,6 +21,7 @@ function Header() {
       },
     });
     localStorage.removeItem('token');
+    localStorage.removeItem('profile');
 
     navigate('/login');
   };
