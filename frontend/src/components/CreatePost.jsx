@@ -4,6 +4,7 @@ import Header from '../partials/Header';
 import Footer from '../partials/Footer';
 import LeftComponent from './LeftComponent';
 import RightComponent from './RightComponent';
+import { useNavigate } from 'react-router-dom';
 
 const CreatePost = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ const CreatePost = () => {
     embeddedVideo: '',
     postType: 'text-option'
   });
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -39,6 +42,7 @@ const CreatePost = () => {
         },
       });
       console.log('Post created successfully', response.data);
+      navigate('/profile');
     } catch (error) {
       console.error('Error creating post:', error.message);
     }

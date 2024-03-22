@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import moment from 'moment';
 import axios from 'axios';
 
-const CommentList = ({ comments }) => {
+const Comments = ({ comments }) => {
   const [commentProfiles, setCommentProfiles] = useState({});
 
   useEffect(() => {
@@ -11,7 +11,7 @@ const CommentList = ({ comments }) => {
       await Promise.all(
         comments?.map(async (comment) => {
           try {
-            const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/profile/${comment.createdBy}`, {
+            const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/comments/${comment.createdBy}`, {
               withCredentials: true,
               headers: {
                 'Content-Type': 'application/json',
@@ -52,4 +52,4 @@ const CommentList = ({ comments }) => {
   );
 };
 
-export default CommentList;
+export default Comments;

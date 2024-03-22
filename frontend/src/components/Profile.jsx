@@ -5,10 +5,13 @@ import LeftComponent from './LeftComponent';
 import RightComponent from './RightComponent';
 import axios from 'axios';
 import Post from './Post';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -45,15 +48,19 @@ const Profile = () => {
     fetchUserPosts();
   }, []);
 
+  const handleCreatePostClick = () => {
+    navigate('/create-post');
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="container mx-auto py-8 flex-grow">
-        <div className="flex flex-wrap">
-          <div className="w-full md:w-1/6 hidden md:block">
+      <div className="container mx-auto max-h-screen py-8 flex-grow">
+        <div className="flex max-h-screen flex-wrap">
+          <div className="w-full md:w-1/6 overflow-y-auto overflow-x-hidden h-screen hidden md:block custom-scrollbar">
             <LeftComponent />
           </div>
-          <div className="w-full md:w-2/3 px-4">
+          <div className="w-full md:w-2/3 px-4 h-screen overflow-y-auto overflow-x-hidden custom-scrollbar">
             {userData && (
               <div className="bg-white shadow-md p-6 rounded-lg mb-6 grid grid-cols-2 gap-4">
                 <div className="col-span-2 text-center">
@@ -67,14 +74,21 @@ const Profile = () => {
                 <p><span className="font-semibold">Semester:</span> {userData.semester}</p>
               </div>
             )}
-            <h1 className="text-2xl font-bold mb-4">{userData?.fullName.split(' ')[0]}&apos;s Posts</h1>
+            <h2 className="text-2xl font-bold mb-4">Create Post</h2>
+            <input
+              type="text"
+              placeholder="Say something..."
+              className="border border-gray-300 w-full rounded py-2 px-4 focus:outline-none focus:border-blue-500 cursor-pointer"
+              onClick={handleCreatePostClick}
+            />
+            <h1 className="text-2xl py-3 font-bold mb-4">{userData?.fullName.split(' ')[0]}&apos;s Posts</h1>
             <div>
               {userPosts.map((post) => (
                 <Post key={post._id} post={post} />
               ))}
             </div>
           </div>
-          <div className="w-full md:w-1/6 hidden md:block">
+          <div className="w-full md:w-1/6 hidden h-screen md:block custom-scrollbar">
             <RightComponent />
           </div>
         </div>

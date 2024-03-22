@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 const EditProfileForm = () => {
   const navigate = useNavigate();
+  const [userProfile, setUserProfile] = useState(null);
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -29,7 +30,7 @@ const EditProfileForm = () => {
             'Access-Control-Allow-Credentials': true,
           },
         });
-        const userProfile = response.data;
+        setUserProfile(response.data);
         setFormData(userProfile);
       } catch (error) {
         console.error('Error fetching user profile:', error.message);
@@ -37,7 +38,7 @@ const EditProfileForm = () => {
     };
 
     fetchUserProfile();
-  }, []);
+  }, [userProfile]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -54,7 +55,7 @@ const EditProfileForm = () => {
     console.log(data);
     try {
       let response;
-      if (formData.fullName) {
+      if (userProfile) {
         response = await axios.put(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', data, {
           withCredentials: true,
           headers: {

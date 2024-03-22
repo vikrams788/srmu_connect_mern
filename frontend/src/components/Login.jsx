@@ -50,7 +50,7 @@ const Login = () => {
               <img src={srmuLogo2} alt="SRMU Logo" className="object-cover min-h-full min-w-full" style={{ borderRadius: '100%' }} />
             </div>
             <h2 className="text-2xl mb-4 font-semibold text-center">Login</h2>
-            {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
+            {error && <div className="text-red-500 mx-auto text-sm mb-4">{error}</div>}
             <form onSubmit={handleSubmit} id="loginForm form">
               <div className="mb-4">
                 <label htmlFor="email" className="block text-gray-700 text-sm font-semibold mb-2">Email</label>
