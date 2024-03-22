@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
+import { AiOutlineLike } from "react-icons/ai";
+import { LuSend } from "react-icons/lu";
 
 const Post = ({ post }) => {
   const [creatorProfile, setCreatorProfile] = useState(null);
+  const [liked, setLiked] = useState(false);
 
   useEffect(() => {
     const fetchCreatorProfile = async () => {
@@ -28,6 +31,11 @@ const Post = ({ post }) => {
     return moment(createdAt).fromNow();
   };
 
+  const handleLike = (e) => {
+    e.preventDefault();
+    setLiked(!liked)
+  }
+
   return (
     <div className="bg-white shadow-md p-6 rounded-lg mb-4">
       <div className="flex items-center justify-between mb-2">
@@ -43,13 +51,14 @@ const Post = ({ post }) => {
           )}
         </div>
       </div>
-      <h2 className="text-xl font-bold mb-2">{post.text}</h2>
+      <h2 className="text-lg font-semibold mb-2">{post.text}</h2>
       {post.link && <p><span className="font-semibold">Link:</span> <a href={post.link} target="_blank" rel="noopener noreferrer">{post.link}</a></p>}
-      {post.image && <img src={post.image} alt="Post" className="w-full mb-2" />}
+      {post.image && <img src={post.image} alt="Post" className="w-full mb-" />}
       {post.embeddedVideo && <iframe width="100%" height="360" src={post.embeddedVideo} title="Embedded Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>}
       <div className="flex items-center mt-4">
-        <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded mr-2">Like</button>
-        <input type="text" placeholder="Add a comment..." className="border border-gray-300 rounded py-1 px-2 focus:outline-none focus:border-blue-500" />
+        <AiOutlineLike className=' m-3 hover:text-blue-500 w-6 h-6 ' onClick={handleLike}/>
+        <input type="text" placeholder="Add a comment..." className="border flex-grow border-gray-300 rounded py-1 px-2 focus:outline-none focus:border-blue-500" />
+        <LuSend className=' m-3 hover:text-blue-500 w-6 h-6 ' />
       </div>
     </div>
   );

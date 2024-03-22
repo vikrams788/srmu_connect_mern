@@ -56,7 +56,7 @@ const Signup = () => {
               <img src={srmuLogo2} alt="SRMU Logo" className="object-cover min-h-full min-w-full" style={{ borderRadius: '100%' }} />
             </div>
             <h2 className="text-2xl mb-4 font-semibold text-center">Signup</h2>
-            {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
+            {error && <div className="text-red-500 text-sm mb-4 mx-auto">{error}</div>}
             <form onSubmit={handleSubmit} id="signupForm form">
               <div className="mb-4">
                 <label htmlFor="email" className="block text-gray-700 text-sm font-semibold mb-2">Email</label>
