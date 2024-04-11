@@ -6,6 +6,7 @@ import RightComponent from './RightComponent';
 import axios from 'axios';
 import Post from './Post';
 import { useNavigate } from 'react-router-dom';
+import { MdOutlineModeEditOutline } from "react-icons/md";
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
@@ -67,7 +68,10 @@ const Profile = () => {
                   <img src={userData.profilePicture} alt="Profile" className="w-40 h-40 rounded-full mx-auto mb-4" />
                 </div>
                 <h1 className="text-2xl font-bold mb-4 mx-auto col-span-2">{userData.fullName}</h1>
-                <p className="col-span-2"><span className="font-semibold">Bio:</span> {userData.bio}</p>
+                <div className=' flex justify-between col-span-2 '>
+                  <p className="col-span-2"><span className="font-semibold">Bio:</span> {userData.bio}</p>
+                  <MdOutlineModeEditOutline className=' w-5 h-5 hover:text-blue-500 ' />
+                </div>
                 <p><span className="font-semibold">Email:</span> {userData.email}</p>
                 <p><span className="font-semibold">Course:</span> {userData.course}</p>
                 <p><span className="font-semibold">Roll Number:</span> {userData.rollNo}</p>
@@ -78,7 +82,7 @@ const Profile = () => {
             <input
               type="text"
               placeholder="Say something..."
-              className="border border-gray-300 w-full rounded py-2 px-4 focus:outline-none focus:border-blue-500 cursor-pointer"
+              className="border border-gray-300 w-full rounded py-2 px-4 focus:outline-none focus:border-blue-500 cursor-pointer hover:border-blue-500 "
               onClick={handleCreatePostClick}
             />
             <h1 className="text-2xl py-3 font-bold mb-4">{userData?.fullName.split(' ')[0]}&apos;s Posts</h1>

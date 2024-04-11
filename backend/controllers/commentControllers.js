@@ -3,7 +3,7 @@ const Post = require('../models/Post');
 
 exports.createComment = async (req, res) => {
     try {
-        const { text } = req.body;
+        const { text, fullName, profilePicture } = req.body;
         const postId = req.params.postId;
         const post = await Post.findById(postId);
         if (!post) {
@@ -13,6 +13,8 @@ exports.createComment = async (req, res) => {
         text,
         createdBy: req.user.userId,
         postId,
+        fullName,
+        profilePicture
         });
         await comment.save();
         post.comments.push(comment);
@@ -27,11 +29,11 @@ exports.createComment = async (req, res) => {
 exports.getCommentsByPostId = async (req, res) => {
     try {
         const postId = req.params.postId;
-        const post = await Post.findById(postId).populate('comments');
-        if (!post) {
-        return res.status(404).json({ message: 'Post not found' });
+        const comments = await Comment.find({postId: postId});
+        if (!comments) {
+        return res.status(404).json({ message: 'Comments not found' });
         }
-        res.status(200).json(post.comments);
+        res.status(200).json(comments);
     } catch (error) {
         console.error('Error fetching comments:', error);
         res.status(500).json({ message: 'Internal server error' });

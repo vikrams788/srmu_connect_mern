@@ -11,6 +11,14 @@ const commentSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    fullName: {
+        type: String,
+        required: true
+    },
+    profilePicture: {
+        type: String,
+        required: true
+    },
     text: {
         type: String,
         required: true

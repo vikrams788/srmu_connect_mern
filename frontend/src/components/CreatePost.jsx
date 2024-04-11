@@ -16,6 +16,8 @@ const CreatePost = () => {
     postType: 'text-option'
   });
 
+  const userProfile = JSON.parse(localStorage.getItem('profile'));
+
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -63,18 +65,18 @@ const CreatePost = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="container my-auto flex-grow mx-auto mt-4">
-        <div className="md:flex md:justify-evenly">
+      <div className="container mx-auto mt-4 flex-grow">
+        <div className="md:flex md:justify-between">
           <div className="md:w-1/4 hidden md:block">
             <LeftComponent />
           </div>
-          <div className="md:w-2/3">
-            <div className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
-              {/* <div className="m-3 top-0 left-0 right-0 mx-auto rounded-full overflow-hidden -mt-10" style={{height: "200px", width: "200px"}}>
-                <img src={srmuLogo2} alt="SRMU Logo" className="object-cover min-h-full min-w-full" style={{ borderRadius: '100%' }} />
-              </div> */}
+          <div className="md:w-3/4">
+            <div className="bg-white shadow-md rounded-lg px-4 py-6 md:px-8 md:py-8 mb-4">
+              <div className="mx-auto rounded-full overflow-hidden" style={{ height: "200px", width: "200px" }}>
+                <img src={userProfile.profilePicture} alt="Profile" className="object-cover w-full h-full" style={{ borderRadius: '100%' }} />
+              </div>
               <h2 className="text-2xl font-bold mb-4 text-center">Create Post</h2>
-              <form onSubmit={handleSubmit} className="flex flex-col" encType="multipart/form-data">
+              <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="mb-4">
                   <label htmlFor="text" className="block text-gray-700 text-sm font-semibold mb-2">Caption</label>
                   <textarea className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="text" name="text" rows="3" placeholder="Enter text" value={formData.text} onChange={handleChange}></textarea>
@@ -85,15 +87,15 @@ const CreatePost = () => {
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700 text-sm font-semibold mb-2">Post Type</label>
-                  <div className="flex items-center">
+                  <div className="flex items-center space-x-4">
                     <input type="radio" id="text-option" name="postType" value="text-option" checked={formData.postType === 'text-option'} onChange={handleChange} />
-                    <label htmlFor="text-option" className="ml-2 mr-6">Caption Only</label>
+                    <label htmlFor="text-option">Caption Only</label>
                     <input type="radio" id="image-option" name="postType" value="image-option" checked={formData.postType === 'image-option'} onChange={handleChange} />
-                    <label htmlFor="image-option" className="ml-2 mr-6">Upload Image</label>
+                    <label htmlFor="image-option">Upload Image</label>
                     <input type="radio" id="video-option" name="postType" value="video-option" checked={formData.postType === 'video-option'} onChange={handleChange} />
-                    <label htmlFor="video-option" className="ml-2 mr-6">Upload Video</label>
+                    <label htmlFor="video-option">Upload Video</label>
                     <input type="radio" id="embed-option" name="postType" value="embed-option" checked={formData.postType === 'embed-option'} onChange={handleChange} />
-                    <label htmlFor="embed-option" className="ml-2">Embed Video</label>
+                    <label htmlFor="embed-option">Embed Video</label>
                   </div>
                 </div>
                 {formData.postType === 'image-option' && (
@@ -111,10 +113,10 @@ const CreatePost = () => {
                 {formData.postType === 'embed-option' && (
                   <div className="mb-4">
                     <label htmlFor="embeddedVideo" className="block text-gray-700 text-sm font-semibold mb-2">Embedded Video</label>
-                    <input className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' type="text" id="embeddedVideo" name="embeddedVideo" placeholder="Enter video URL (replace '/watch?v=' with '/embed/')" value={formData.embeddedVideo} onChange={handleChange} />
+                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" id="embeddedVideo" name="embeddedVideo" placeholder="Enter video URL (replace '/watch?v=' with '/embed/')" value={formData.embeddedVideo} onChange={handleChange} />
                   </div>
                 )}
-                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Create Post</button>
+                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto">Create Post</button>
               </form>
             </div>
           </div>
