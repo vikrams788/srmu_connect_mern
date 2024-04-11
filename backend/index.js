@@ -9,7 +9,6 @@ const userRoutes = require('./routes/userRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const postRoutes = require('./routes/postRoutes');
 const commentRoutes = require('./routes/commentRoutes');
-// const { upload } = require('./middleware/multerMiddleware');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -19,7 +18,6 @@ app.use(cors({
     credentials: true,
 }));
 app.use(cookieParser());
-// app.use(upload.single('profilePicture'));
 
 app.use('/api', userRoutes);
 app.use('/api', profileRoutes);

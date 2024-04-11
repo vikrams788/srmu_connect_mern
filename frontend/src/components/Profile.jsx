@@ -70,7 +70,7 @@ const Profile = () => {
                 <h1 className="text-2xl font-bold mb-4 mx-auto col-span-2">{userData.fullName}</h1>
                 <div className=' flex justify-between col-span-2 '>
                   <p className="col-span-2"><span className="font-semibold">Bio:</span> {userData.bio}</p>
-                  <MdOutlineModeEditOutline className=' w-5 h-5 hover:text-blue-500 ' />
+                  <MdOutlineModeEditOutline className=' w-5 h-5 hover:text-blue-500 ' onClick={() => {navigate('/edit-profile')}}/>
                 </div>
                 <p><span className="font-semibold">Email:</span> {userData.email}</p>
                 <p><span className="font-semibold">Course:</span> {userData.course}</p>

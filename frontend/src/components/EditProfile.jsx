@@ -31,7 +31,7 @@ const EditProfileForm = () => {
           },
         });
         setUserProfile(response.data);
-        setFormData(userProfile);
+        setFormData(response.data);
       } catch (error) {
         console.error('Error fetching user profile:', error.message);
       }

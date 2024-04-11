@@ -35,9 +35,25 @@ exports.createPost = async (req, res) => {
 
 exports.getCurrentUserPosts = async (req, res) => {
     try {
-        const userId = req.user.userId
-        const posts = await Post.find({createdBy: userId});
-        res.status(200).json(posts);
+        const userId = req.user.userId;
+        const posts = await Post.find({ createdBy: userId });
+
+        const postsWithCounts = await Promise.all(posts.map(async (post) => {
+            const likesCount = post.likes.length;
+            const commentsCount = post.comments.length;
+            const isLiked = post.likes.some(function(like){
+                return like.likedBy == userId
+            });
+
+            return {
+                ...post.toJSON(),
+                likesCount,
+                commentsCount,
+                isLiked
+            };
+        }));
+
+        res.status(200).json(postsWithCounts);
     } catch (error) {
         console.error('Error fetching posts:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -46,11 +62,28 @@ exports.getCurrentUserPosts = async (req, res) => {
 
 exports.getAllPosts = async (req, res) => {
     try {
-      const posts = await Post.find();
-      res.status(200).json(posts);
+        const posts = await Post.find();
+        const userId = req.user.userId;
+
+        const postsWithCounts = await Promise.all(posts.map(async (post) => {
+            const likesCount = post.likes.length;
+            const commentsCount = post.comments.length;
+            const isLiked = post.likes.some(function(like){
+                return like.likedBy == userId
+            });
+
+            return {
+                ...post.toJSON(),
+                likesCount,
+                commentsCount,
+                isLiked
+            };
+        }));
+
+        res.status(200).json(postsWithCounts);
     } catch (error) {
-      console.error('Error fetching all posts:', error);
-      res.status(500).json({ message: 'Internal server error' });
+        console.error('Error fetching all posts:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 };  
 
@@ -58,10 +91,26 @@ exports.getPostById = async (req, res) => {
     try {
         const postId = req.params.id;
         const post = await Post.findById(postId);
+        const userId = req.user.userId;
+
         if (!post) {
-        return res.status(404).json({ message: 'Post not found' });
+            return res.status(404).json({ message: 'Post not found' });
         }
-        res.status(200).json(post);
+
+        const likesCount = post.likes.length;
+        const commentsCount = post.comments.length;
+        const isLiked = post.likes.some(function(like){
+            return like.likedBy == userId
+        });
+
+        const postDataWithCounts = {
+            ...post.toJSON(),
+            likesCount,
+            commentsCount,
+            isLiked
+        };
+
+        res.status(200).json(postDataWithCounts);
     } catch (error) {
         console.error('Error fetching post by ID:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -112,6 +161,59 @@ exports.deletePostById = async (req, res) => {
         res.status(200).json({ message: 'Post deleted successfully', post: deletedPost });
     } catch (error) {
         console.error('Error deleting post:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.handleLikes = async (req, res) => {
+    const postId = req.params.postId;
+    const userId = req.user.userId
+    const { fullName } = req.body
+
+    try {
+        const post = await Post.findById(postId);
+        
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        if (post.likes.some(like => like.likedBy.equals(userId))) {
+            return res.status(400).json({ message: 'Post already liked by the user' });
+        }
+
+        post.likes.push({ likedBy: userId, fullName });
+        await post.save();
+
+        res.status(200).json({ message: 'Post liked', likes: post.likes.length });
+    } catch (error) {
+        console.error('Error liking post:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.handleUnlike = async (req, res) => {
+    const { postId } = req.params;
+    const userId = req.user.userId;
+  
+    try {
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        const existingLikeIndex = post.likes.findIndex(like => like.likedBy.equals(userId));
+
+        if (existingLikeIndex === -1) {
+            return res.status(400).json({ message: 'User has not liked this post' });
+        }
+
+        post.likes.splice(existingLikeIndex, 1);
+        await post.save();
+
+        res.status(200).json({ message: 'Like removed successfully' });
+    } catch (error) {
+        console.error('Error removing like:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

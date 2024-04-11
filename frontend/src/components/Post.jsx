@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import { AiOutlineClose, AiOutlineLike } from "react-icons/ai";
+import { AiOutlineClose, AiFillLike, AiOutlineLike, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { LuSend } from "react-icons/lu";
 import Comments from './Comments';
+import { useNavigate } from 'react-router-dom';
 
 const Post = ({ post }) => {
+  const navigate = useNavigate();
   const [creatorProfile, setCreatorProfile] = useState(null);
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -15,11 +17,6 @@ const Post = ({ post }) => {
     fullName: '',
     profilePicture: ''
   });
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setNewComment({ ...newComment, [name]: value})
-  };
 
   useEffect(() => {
     const fetchCreatorProfile = async () => {
@@ -40,22 +37,69 @@ const Post = ({ post }) => {
     fetchCreatorProfile();
   }, [post.createdBy]);
 
+  useEffect(() => {
+    // Check if the current user has liked this post
+    const userProfile = JSON.parse(localStorage.getItem('profile'));
+    const currentUserId = userProfile.userId;
+
+    if (post.likes.some(like => like.userId === currentUserId)) {
+      setLiked(true);
+    } else {
+      setLiked(false);
+    }
+  }, [post.likes]);
+
   const renderTimeAgo = (createdAt) => {
     return moment(createdAt).fromNow();
   };
 
-  const handleLike = (e) => {
-    e.preventDefault();
-    setLiked(!liked)
-  }
+  const handleLike = async () => {
+    try {
+      const userProfile = JSON.parse(localStorage.getItem('profile'));
+      const currentUserId = userProfile.userId;
+      const fullName = userProfile.fullName;
+
+      if (liked) {
+        // Unlike the post
+        await axios.delete(`${import.meta.env.VITE_REACT_APP_API_URL}/api/posts/${post._id}/unlike`, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Credentials': true,
+          },
+          data: { userId: currentUserId },
+        });
+        setLiked(false);
+        console.log('Post unliked');
+      } else {
+        // Like the post
+        await axios.put(`${import.meta.env.VITE_REACT_APP_API_URL}/api/posts/${post._id}/like`, { userId: currentUserId, fullName }, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Credentials': true,
+          },
+        });
+        setLiked(true);
+        console.log('Post liked');
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error.message);
+    }
+  };
 
   const toggleComments = (postId) => {
     setShowComments(!showComments);
     setSelectedPostId(postId);
   };
 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setNewComment({ ...newComment, [name]: value });
+  };
+
   const handleCommentSubmit = async (selectedPostId) => {
-    try{
+    try {
       const userProfile = JSON.parse(localStorage.getItem('profile'));
 
       newComment.fullName = userProfile.fullName;
@@ -67,11 +111,11 @@ const Post = ({ post }) => {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Credentials': true,
         },
-      })
+      });
       toggleComments();
-      console.log(response.data);
+      console.log('Comment posted:', response.data);
     } catch (error) {
-      console.log(error.message);
+      console.error('Error posting comment:', error.message);
     }
   };
 
@@ -88,6 +132,10 @@ const Post = ({ post }) => {
               </div>
             </>
           )}
+        </div>
+        <div className="relative flex items-center">
+          <AiOutlineEdit className="text-gray-500 hover:text-blue-500 m-2 cursor-pointer mr-2 w-6 h-6" onClick={() => {navigate('/create-post')}}/>
+          <AiOutlineDelete className="text-gray-500 hover:text-red-500 m-2 cursor-pointer w-6 h-6" />
         </div>
       </div>
       <h2 className="text-lg font-semibold mb-2">{post.text}</h2>
@@ -117,7 +165,14 @@ const Post = ({ post }) => {
         ></iframe>
       )}
       <div className="flex items-center mt-4">
-        <AiOutlineLike className="m-3 hover:text-blue-500 w-6 h-6" onClick={handleLike} />
+        <span className="mr-2 flex items-center text-gray-500">
+          {post.likes.length} Likes
+          {liked ? (
+            <AiFillLike className="ml-1 text-blue-500 w-4 h-4" onClick={handleLike} />
+          ) : (
+            <AiOutlineLike className="ml-1 hover:text-blue-500 w-4 h-4" onClick={handleLike} />
+          )}
+        </span>
         <input
           type="text"
           placeholder="Add a comment..."
@@ -125,6 +180,9 @@ const Post = ({ post }) => {
           onClick={() => toggleComments(post._id)}
         />
         <LuSend className="m-3 hover:text-blue-500 w-6 h-6" />
+        <span className="flex items-center text-gray-500">
+          {post.comments.length} Comments
+        </span>
       </div>
       {showComments && selectedPostId === post._id && (
         <div className="absolute inset-0 bg-white bg-opacity-50 h-full flex justify-center items-center">
