@@ -8,6 +8,8 @@ router.post('/posts', authMiddleware, upload.fields([{ name: 'image', maxCount: 
 
 router.put('/posts/:postId/like', authMiddleware, postController.handleLikes);
 
+router.put('/posts/:postId/delete-comment', authMiddleware, postController.deleteComment);
+
 router.delete('/posts/:postId/unlike', authMiddleware, postController.handleUnlike);
 
 router.get('/posts', authMiddleware, postController.getAllPosts);
