@@ -5,6 +5,7 @@ import Footer from '../partials/Footer';
 import LeftComponent from './LeftComponent';
 import RightComponent from './RightComponent';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const EditProfileForm = () => {
   const navigate = useNavigate();
@@ -63,6 +64,14 @@ const EditProfileForm = () => {
             'Access-Control-Allow-Credentials': true,
           },
         });
+        toast.success('Profile updated successfully', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       } else {
         response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', data, {
           withCredentials: true,
@@ -70,6 +79,14 @@ const EditProfileForm = () => {
             'Content-Type': 'multipart/form-data',
             'Access-Control-Allow-Credentials': true,
           },
+        });
+        toast.success('Profile created successfully', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
         });
       }
       console.log('Profile saved successfully', response.data);

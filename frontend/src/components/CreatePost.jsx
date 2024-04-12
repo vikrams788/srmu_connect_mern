@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from '../partials/Header';
 import Footer from '../partials/Footer';
 import LeftComponent from './LeftComponent';
 import RightComponent from './RightComponent';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const CreatePost = ({post}) => {
   const [formData, setFormData] = useState({
@@ -16,10 +17,18 @@ const CreatePost = ({post}) => {
     postType: 'text-option'
   });
 
-  if(post) {
-    formData.text = post.text,
-    formData.link = post.link
-  }
+  useEffect(() => {
+    if (post) {
+      setFormData({
+        text: post.text || '',
+        link: post.link || '',
+        image: '',
+        video: '',
+        embeddedVideo: '',
+        postType: 'text-option'
+      });
+    }
+  }, [post]);
 
   const userProfile = JSON.parse(localStorage.getItem('profile'));
 
@@ -55,6 +64,16 @@ const CreatePost = ({post}) => {
             'Access-Control-Allow-Credentials': true,
           },
         });
+
+        toast.success('Post updated successfully', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+
         console.log('Post updated successfully', response.data);
       }
       else {
@@ -65,6 +84,16 @@ const CreatePost = ({post}) => {
             'Access-Control-Allow-Credentials': true,
           },
         });
+
+        toast.success('Post created successfully', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+
         console.log('Post created successfully', response.data);
       }
       navigate('/profile');

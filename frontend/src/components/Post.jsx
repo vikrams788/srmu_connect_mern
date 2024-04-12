@@ -5,6 +5,8 @@ import { AiOutlineClose, AiFillLike, AiOutlineLike, AiOutlineEdit, AiOutlineDele
 import { LuSend } from "react-icons/lu";
 import Comments from './Comments';
 import { useNavigate } from 'react-router-dom';
+import DeletePost from './DeletePost';
+import { toast } from 'react-toastify';
 
 const Post = ({ post }) => {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ const Post = ({ post }) => {
     profilePicture: ''
   });
   const userProfile = JSON.parse(localStorage.getItem('profile'));
+  const [showDeletePost, setShowDeletePost] = useState(false);
 
   useEffect(() => {
     const fetchCreatorProfile = async () => {
@@ -112,7 +115,18 @@ const Post = ({ post }) => {
         },
       });
       toggleComments();
+
+      toast.success('Comment added', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      
       console.log('Comment posted:', response.data);
+      
     } catch (error) {
       console.error('Error posting comment:', error.message);
     }
@@ -121,6 +135,18 @@ const Post = ({ post }) => {
   const handlePostEdit = (postId) => {
     localStorage.setItem('editPostId', postId);
     navigate('/edit-post');
+  };
+
+  const handleDeleteConfirmation = () => {
+    setShowDeletePost(true);
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeletePost(false);
+  };
+
+  const handlePostDelete = () => {
+    setShowDeletePost(false);
   };
 
   return (
@@ -140,7 +166,7 @@ const Post = ({ post }) => {
         {userProfile.createdBy === post.createdBy && (
           <div className="relative flex items-center">
             <AiOutlineEdit className="text-gray-500 hover:text-blue-500 m-2 cursor-pointer mr-2 w-6 h-6" onClick={() => handlePostEdit(post._id)} />
-            <AiOutlineDelete className="text-gray-500 hover:text-red-500 m-2 cursor-pointer w-6 h-6" />
+            <AiOutlineDelete className="text-gray-500 hover:text-red-500 m-2 cursor-pointer w-6 h-6" onClick={handleDeleteConfirmation} />
           </div>
         )}
       </div>
@@ -215,6 +241,9 @@ const Post = ({ post }) => {
             <Comments comments={post.comments} postId={selectedPostId} />
           </div>
         </div>
+      )}
+      {showDeletePost && (
+        <DeletePost postId={post._id} onDelete={handlePostDelete} onCancel={handleDeleteCancel} />
       )}
     </div>
   );

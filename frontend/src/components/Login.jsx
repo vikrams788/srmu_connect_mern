@@ -4,6 +4,7 @@ import axios from 'axios';
 import Footer from '../partials/Footer';
 import Header from '../partials/Header';
 import srmuLogo2 from '../assets/srmu-logo2.webp';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -33,6 +34,14 @@ const Login = () => {
       const token = response.data.token2;
       localStorage.setItem('token', token);
 
+      toast.success('Logged in successfully', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       navigate('/');
     } catch (error) {
       console.error('Error in login:', error.response.data.message);
