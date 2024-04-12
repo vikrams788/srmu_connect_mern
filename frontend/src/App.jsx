@@ -5,6 +5,7 @@ import Signup from './components/Signup';
 import EditProfile from './components/EditProfile';
 import Profile from './components/Profile';
 import CreatePost from './components/CreatePost';
+import EditPost from './components/EditPost';
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
         <Route path='/profile' element={isLoggedIn ? <Profile /> : <Login />} />
         <Route path='/edit-profile' element={isLoggedIn ? <EditProfile /> : <Login />} />
         <Route path='/create-post' element={isLoggedIn ? <CreatePost /> : <Login />} />
+        <Route path='edit-post' element={isLoggedIn ? <EditPost /> : <Login />}/>
       </Routes>
     </BrowserRouter>
   )

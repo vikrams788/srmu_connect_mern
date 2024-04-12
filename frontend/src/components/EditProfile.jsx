@@ -73,7 +73,7 @@ const EditProfileForm = () => {
         });
       }
       console.log('Profile saved successfully', response.data);
-      navigate('/profile');
+      navigate('/');
     } catch (error) {
       console.error('Error saving profile:', error.message);
     }

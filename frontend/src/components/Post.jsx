@@ -17,6 +17,7 @@ const Post = ({ post }) => {
     fullName: '',
     profilePicture: ''
   });
+  const userProfile = JSON.parse(localStorage.getItem('profile'));
 
   useEffect(() => {
     const fetchCreatorProfile = async () => {
@@ -39,7 +40,6 @@ const Post = ({ post }) => {
 
   useEffect(() => {
     // Check if the current user has liked this post
-    const userProfile = JSON.parse(localStorage.getItem('profile'));
     const currentUserId = userProfile.userId;
 
     if (post.likes.some(like => like.userId === currentUserId)) {
@@ -100,7 +100,6 @@ const Post = ({ post }) => {
 
   const handleCommentSubmit = async (selectedPostId) => {
     try {
-      const userProfile = JSON.parse(localStorage.getItem('profile'));
 
       newComment.fullName = userProfile.fullName;
       newComment.profilePicture = userProfile.profilePicture;
@@ -119,6 +118,11 @@ const Post = ({ post }) => {
     }
   };
 
+  const handlePostEdit = (postId) => {
+    localStorage.setItem('editPostId', postId);
+    navigate('/edit-post');
+  };
+
   return (
     <div className="bg-white shadow-md p-6 rounded-lg mb-4">
       <div className="flex items-center justify-between mb-2">
@@ -133,10 +137,12 @@ const Post = ({ post }) => {
             </>
           )}
         </div>
-        <div className="relative flex items-center">
-          <AiOutlineEdit className="text-gray-500 hover:text-blue-500 m-2 cursor-pointer mr-2 w-6 h-6" onClick={() => {navigate('/create-post')}}/>
-          <AiOutlineDelete className="text-gray-500 hover:text-red-500 m-2 cursor-pointer w-6 h-6" />
-        </div>
+        {userProfile.createdBy === post.createdBy && (
+          <div className="relative flex items-center">
+            <AiOutlineEdit className="text-gray-500 hover:text-blue-500 m-2 cursor-pointer mr-2 w-6 h-6" onClick={() => handlePostEdit(post._id)} />
+            <AiOutlineDelete className="text-gray-500 hover:text-red-500 m-2 cursor-pointer w-6 h-6" />
+          </div>
+        )}
       </div>
       <h2 className="text-lg font-semibold mb-2">{post.text}</h2>
       {post.link && (

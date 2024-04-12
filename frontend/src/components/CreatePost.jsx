@@ -6,7 +6,7 @@ import LeftComponent from './LeftComponent';
 import RightComponent from './RightComponent';
 import { useNavigate } from 'react-router-dom';
 
-const CreatePost = () => {
+const CreatePost = ({post}) => {
   const [formData, setFormData] = useState({
     text: '',
     link: '',
@@ -16,6 +16,11 @@ const CreatePost = () => {
     postType: 'text-option'
   });
 
+  if(post) {
+    formData.text = post.text,
+    formData.link = post.link
+  }
+
   const userProfile = JSON.parse(localStorage.getItem('profile'));
 
   const navigate = useNavigate();
@@ -24,26 +29,44 @@ const CreatePost = () => {
     event.preventDefault();
     
     const data = new FormData();
-    data.append('text', formData.text);
-    data.append('link', formData.link);
-    data.append('postType', formData.postType);
-    if (formData.image) {
-      data.append('image', formData.image);
-    } else if (formData.video) {
-      data.append('video', formData.video);
-    } else if (formData.embeddedVideo) {
-      data.append('embeddedVideo', formData.embeddedVideo);
+    if(post) {
+      data.append('text', formData.text);
+      data.append('link', formData.link);
+    }
+    else {
+      data.append('text', formData.text);
+      data.append('link', formData.link);
+      data.append('postType', formData.postType);
+      if (formData.image) {
+        data.append('image', formData.image);
+      } else if (formData.video) {
+        data.append('video', formData.video);
+      } else if (formData.embeddedVideo) {
+        data.append('embeddedVideo', formData.embeddedVideo);
+      }
     }
 
     try {
-      const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/posts', data, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Access-Control-Allow-Credentials': true,
-        },
-      });
-      console.log('Post created successfully', response.data);
+      if(post) {
+        const response = await axios.put(`${import.meta.env.VITE_REACT_APP_API_URL}/api/posts/${post._id}`, data, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Access-Control-Allow-Credentials': true,
+          },
+        });
+        console.log('Post updated successfully', response.data);
+      }
+      else {
+        const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/posts', data, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Access-Control-Allow-Credentials': true,
+          },
+        });
+        console.log('Post created successfully', response.data);
+      }
       navigate('/profile');
     } catch (error) {
       console.error('Error creating post:', error.message);
@@ -51,14 +74,20 @@ const CreatePost = () => {
   };
 
   const handleChange = (event) => {
-    const { name, value, type, files } = event.target;
-    if (type === 'file') {
-      console.log(files.length);
-      if (files.length > 0) {
-        setFormData({ ...formData, [name]: files[0] });
+    if(post){
+      const { name, value } = event.target;
+      setFormData({ ...formData, [name]: value});
+    }
+    else {
+      const { name, value, type, files } = event.target;
+      if (type === 'file') {
+        console.log(files.length);
+        if (files.length > 0) {
+          setFormData({ ...formData, [name]: files[0] });
+        }
+      } else {
+        setFormData({ ...formData, [name]: value });
       }
-    } else {
-      setFormData({ ...formData, [name]: value });
     }
   };
 
@@ -76,7 +105,20 @@ const CreatePost = () => {
                 <img src={userProfile.profilePicture} alt="Profile" className="object-cover w-full h-full" style={{ borderRadius: '100%' }} />
               </div>
               <h2 className="text-2xl font-bold mb-4 text-center">Create Post</h2>
-              <form onSubmit={handleSubmit} encType="multipart/form-data">
+              {post ? (
+                <form onSubmit={handleSubmit} encType="multipart/form-data">
+                  <div className="mb-4">
+                    <label htmlFor="text" className="block text-gray-700 text-sm font-semibold mb-2">Caption</label>
+                    <textarea className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="text" name="text" rows="3" placeholder="Enter text" value={formData.text} onChange={handleChange}></textarea>
+                  </div>
+                  <div className="mb-4">
+                    <label htmlFor="link" className="block text-gray-700 text-sm font-semibold mb-2">Link</label>
+                    <input type="text" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="link" name="link" placeholder="Enter link" value={formData.link} onChange={handleChange} />
+                  </div>
+                  <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto">Create Post</button>
+                </form>
+              ) :
+              (<form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="mb-4">
                   <label htmlFor="text" className="block text-gray-700 text-sm font-semibold mb-2">Caption</label>
                   <textarea className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="text" name="text" rows="3" placeholder="Enter text" value={formData.text} onChange={handleChange}></textarea>
@@ -117,7 +159,7 @@ const CreatePost = () => {
                   </div>
                 )}
                 <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto">Create Post</button>
-              </form>
+              </form>)}
             </div>
           </div>
           <div className="md:w-1/4 hidden md:block">

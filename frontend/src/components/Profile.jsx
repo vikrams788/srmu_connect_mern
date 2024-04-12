@@ -47,7 +47,7 @@ const Profile = () => {
 
     fetchUserData();
     fetchUserPosts();
-  }, []);
+  }, [userData]);
 
   const handleCreatePostClick = () => {
     navigate('/create-post');

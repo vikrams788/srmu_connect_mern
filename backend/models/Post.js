@@ -42,7 +42,11 @@ const postSchema = new mongoose.Schema({
   comments: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Comment'
-  }]
+  }],
+  postType: {
+    type: String,
+    required: true
+  }
 });
 
 const Post = mongoose.model('Post', postSchema);

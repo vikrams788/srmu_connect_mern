@@ -120,28 +120,15 @@ exports.getPostById = async (req, res) => {
 exports.editPost = async (req, res) => {
     try {
         const postId = req.params.id;
-        const { text, link, postType } = req.body;
-        let imageUrl, videoUrl;
-
-        if (postType === 'image-option' && req.files.image) {
-            const imageUploadResponse = await cloudinary.uploader.upload(req.files.image[0].path);
-            imageUrl = imageUploadResponse.secure_url;
-        }
-        else if (postType === 'video-option' && req.files.video) {
-            const videoUploadResponse = await cloudinary.uploader.upload(req.files.video[0].path, { resource_type: 'video' });
-            videoUrl = videoUploadResponse.secure_url;
-        }
+        const { text, link } = req.body;
 
         const existingPost = await Post.findById(postId);
         if (!existingPost) {
             return res.status(404).json({ message: 'Post not found' });
         }
 
-        existingPost.text = text || existingPost.text;
-        existingPost.link = link || existingPost.link;
-        existingPost.postType = postType || existingPost.postType;
-        existingPost.image = imageUrl || existingPost.image;
-        existingPost.video = videoUrl || existingPost.video;
+        existingPost.text = text;
+        existingPost.link = link;
 
         await existingPost.save();
         res.status(200).json({ message: 'Post updated successfully', post: existingPost });
