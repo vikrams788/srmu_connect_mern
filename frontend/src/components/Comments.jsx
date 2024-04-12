@@ -79,7 +79,7 @@ const Comments = ({ postId }) => {
                       className="mt-1 mr-1 "
                       onClick={() => handleDeleteComment(comment._id)}
                     >
-                      <AiOutlineDelete className='w-6 h-6 text-gray-800 hover:text-white hover:bg-red-500'/>
+                      <AiOutlineDelete className='w-6 h-6 text-gray-800 hover:text-white hover:bg-red-500 rounded'/>
                     </button>
                   )}
                 </div>

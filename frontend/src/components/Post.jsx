@@ -124,7 +124,7 @@ const Post = ({ post }) => {
         pauseOnHover: true,
         draggable: true,
       });
-      
+
       console.log('Comment posted:', response.data);
       
     } catch (error) {
@@ -217,8 +217,8 @@ const Post = ({ post }) => {
         </span>
       </div>
       {showComments && selectedPostId === post._id && (
-        <div className="absolute inset-0 bg-white bg-opacity-50 h-full flex justify-center items-center">
-          <div className="bg-white p-6 w-full sm:w-1/2 h-auto flex flex-col rounded-lg">
+        <div className="absolute inset-0 bg-white bg-opacity-50 h-full flex justify-center items-center z-10">
+          <div className="bg-white p-6 w-full sm:w-1/2 h-auto flex flex-col rounded-lg ">
             <button
               className=" text-black hover:text-white ml-auto hover:bg-red-500 rounded"
               onClick={toggleComments}
