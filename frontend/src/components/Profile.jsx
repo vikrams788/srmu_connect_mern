@@ -7,18 +7,16 @@ import axios from 'axios';
 import Post from './Post';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { FaUserPlus, FaUserCheck } from "react-icons/fa6";
+import { FaUserPlus } from "react-icons/fa6";
 import { FaUserMinus } from "react-icons/fa";
 import { toast } from 'react-toastify';
+import {Tooltip} from 'react-tooltip';
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
-  const [showUnfriendIcon, setShowUnfriendIcon] = useState(false);
   const { userId } = useParams();
-  const [friendRequest, sentFriendRequest] = useState(false);
   const currentUser = JSON.parse(localStorage.getItem('profile'));
-  const user = JSON.parse(localStorage.getItem('user'));
   const currentUserId = currentUser.createdBy;
 
   const navigate = useNavigate();
@@ -54,17 +52,13 @@ const Profile = () => {
         setUserData(profileResponse.data);
         setUserPosts(postsResponse.data);
 
-        if (user && user.friends && profileResponse.data?.fullName) {
-          const isFriend = user.friends.some(friend => friend.fullName === profileResponse.data.fullName);
-          setShowUnfriendIcon(isFriend);
-        }
       } catch (error) {
         console.error('Error fetching user profile data or posts:', error);
       }
     };
 
     fetchUserData();
-  }, [user, user.friends, userData, userId]);
+  }, [userId]);
 
   //Create Post
   const handleCreatePostClick = () => {
@@ -97,10 +91,9 @@ const Profile = () => {
       });
 
       console.log('Friend request sent successfully:', response.data);
-
-      sentFriendRequest(true);
     } catch (error) {
       console.error('Error sending friend request:', error);
+      toast.error('Friend request already sent or received');
     }
   };
 
@@ -127,10 +120,9 @@ const Profile = () => {
       });
 
       console.log('Friend removed successfully:', response.data);
-
-      setShowUnfriendIcon(false);
     } catch (error) {
       console.error('Error removing friend:', error);
+      toast.error('You two aren&apos;t friends');
     }
   };
 
@@ -152,15 +144,27 @@ const Profile = () => {
                 <div className=' flex justify-between items-center col-span-2 '>
                   <p className="col-span-2"><span className="font-semibold">Bio:</span> {userData.bio}</p>
                   <p className='flex'>
-                    {showUnfriendIcon === false ? (
-                      <FaUserPlus className='w-6 h-6 text-blue-500 hover:text-blue-700 m-2' onClick={handleAddFriend}/>
-                    ) : (
-                      <FaUserCheck className='w-6 h-6 text-blue-500 hover:text-blue-700 m-2'/>
-                    )}
-                    {userData.userId === userData.createdBy && (
-                      <MdOutlineModeEditOutline className=' w-6 h-6 hover:text-blue-500 m-2' onClick={() => {navigate('/edit-profile')}}/>
-                    )}
-                    {showUnfriendIcon && (<FaUserMinus className=' w-6 h-6 hover:text-blue-600 m-2 text-blue-500' onClick={handleRemoveFriend}/>)}
+                    <FaUserPlus 
+                    className='w-6 h-6 text-gray-700 hover:text-blue-500 m-2' 
+                    onClick={handleAddFriend}
+                    data-tooltip-id="add-friend-tooltip"
+                    data-tooltip-content="Add Friend"
+                    />
+                    <Tooltip id='add-friend-tooltip' />
+                    <MdOutlineModeEditOutline 
+                    className=' w-6 h-6 hover:text-blue-500 text-gray-700 m-2' 
+                    onClick={() => {navigate('/edit-profile')}}
+                    data-tooltip-id="edit-profile-tooltip"
+                    data-tooltip-content="Edit Profile"
+                    />
+                    <Tooltip id='edit-profile-tooltip' />
+                    <FaUserMinus 
+                    className=' w-6 h-6 hover:text-blue-500 m-2 text-gray-700' 
+                    onClick={handleRemoveFriend}
+                    data-tooltip-id="unfriend-tooltip"
+                    data-tooltip-content="Unfriend"
+                    />
+                    <Tooltip id='unfriend-tooltip' />
                   </p>
                 </div>
                 <p><span className="font-semibold">Email:</span> {userData.email}</p>
