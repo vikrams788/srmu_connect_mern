@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 const Post = ({ post }) => {
   const navigate = useNavigate();
   const [creatorProfile, setCreatorProfile] = useState(null);
-  const [liked, setLiked] = useState(false);
+  // const [liked, setLiked] = useState(post.isLiked);
   const [showComments, setShowComments] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [newComment, setNewComment] = useState({
@@ -22,6 +22,7 @@ const Post = ({ post }) => {
   const userProfile = JSON.parse(localStorage.getItem('profile'));
   const [showDeletePost, setShowDeletePost] = useState(false);
 
+  //Fetch the profile of the creator
   useEffect(() => {
     const fetchCreatorProfile = async () => {
       try {
@@ -41,28 +42,27 @@ const Post = ({ post }) => {
     fetchCreatorProfile();
   }, [post.createdBy]);
 
-  useEffect(() => {
-    // Check if the current user has liked this post
-    const currentUserId = userProfile.userId;
+  // useEffect(() => {
+  //   // Check if the current user has liked this post
+  //   const currentUserId = userProfile.userId;
+  //   setLiked(post.likes.some(function(like){
+  //     return like.likedBy == currentUserId
+  //   }));
+  // }, [post.likes, userProfile.userId]);
 
-    if (post.likes.some(like => like.userId === currentUserId)) {
-      setLiked(true);
-    } else {
-      setLiked(false);
-    }
-  }, [post.likes]);
-
+  //Render time ago
   const renderTimeAgo = (createdAt) => {
     return moment(createdAt).fromNow();
   };
 
+  //Like a post
   const handleLike = async () => {
     try {
       const userProfile = JSON.parse(localStorage.getItem('profile'));
       const currentUserId = userProfile.userId;
       const fullName = userProfile.fullName;
 
-      if (liked) {
+      if (post.isLiked === true) {
         // Unlike the post
         await axios.delete(`${import.meta.env.VITE_REACT_APP_API_URL}/api/posts/${post._id}/unlike`, {
           withCredentials: true,
@@ -72,7 +72,8 @@ const Post = ({ post }) => {
           },
           data: { userId: currentUserId },
         });
-        setLiked(false);
+        
+        // setLiked(false);
         console.log('Post unliked');
       } else {
         // Like the post
@@ -83,7 +84,7 @@ const Post = ({ post }) => {
             'Access-Control-Allow-Credentials': true,
           },
         });
-        setLiked(true);
+        // setLiked(true);
         console.log('Post liked');
       }
     } catch (error) {
@@ -91,16 +92,19 @@ const Post = ({ post }) => {
     }
   };
 
+  //Open comments section
   const toggleComments = (postId) => {
     setShowComments(!showComments);
     setSelectedPostId(postId);
   };
 
+  //Handle comment input change
   const handleChange = (event) => {
     const { name, value } = event.target;
     setNewComment({ ...newComment, [name]: value });
   };
 
+  //Post a comment
   const handleCommentSubmit = async (selectedPostId) => {
     try {
 
@@ -132,19 +136,23 @@ const Post = ({ post }) => {
     }
   };
 
+  //Clicking on the post edit button
   const handlePostEdit = (postId) => {
     localStorage.setItem('editPostId', postId);
     navigate('/edit-post');
   };
 
+  //Delete post confirmation
   const handleDeleteConfirmation = () => {
     setShowDeletePost(true);
   };
 
+  //Cancel delete post
   const handleDeleteCancel = () => {
     setShowDeletePost(false);
   };
 
+  //Close delete post dialog box
   const handlePostDelete = () => {
     setShowDeletePost(false);
   };
@@ -199,7 +207,7 @@ const Post = ({ post }) => {
       <div className="flex items-center mt-4">
         <span className="mr-2 flex items-center text-gray-500">
           {post.likes.length} Likes
-          {liked ? (
+          {post.isLiked === true ? (
             <AiFillLike className="ml-1 text-blue-500 w-4 h-4" onClick={handleLike} />
           ) : (
             <AiOutlineLike className="ml-1 hover:text-blue-500 w-4 h-4" onClick={handleLike} />

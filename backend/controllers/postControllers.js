@@ -117,6 +117,40 @@ exports.getPostById = async (req, res) => {
     }
 };
 
+exports.getAnotherUsersPosts = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const posts = await Post.find({ createdBy: id });
+
+        if (!posts || posts.length === 0) {
+            return res.status(404).json({ message: 'No posts found for this user' });
+        }
+
+        const userId = req.user.userId;
+
+        const postsWithCounts = posts.map(post => {
+            const likesCount = post.likes.length;
+            const commentsCount = post.comments.length;
+            const isLiked = post.likes.some(function(like){
+                return like.likedBy == userId
+            });
+
+            return {
+                ...post.toJSON(),
+                likesCount,
+                commentsCount,
+                isLiked
+            };
+        });
+
+        res.status(200).json(postsWithCounts);
+    } catch (error) {
+        console.error('Error fetching posts by user ID:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 exports.editPost = async (req, res) => {
     try {
         const postId = req.params.id;

@@ -18,6 +18,8 @@ router.get('/my-posts', authMiddleware, postController.getCurrentUserPosts);
 
 router.get('/posts/:id', authMiddleware, postController.getPostById);
 
+router.get('/posts/user/:id', authMiddleware, postController.getAnotherUsersPosts);
+
 router.put('/posts/:id', authMiddleware, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'video', maxCount: 1 }]), postController.editPost);
 
 router.delete('/posts/:id', authMiddleware, postController.deletePostById);

@@ -9,6 +9,8 @@ router.post('/profile', authMiddleware, upload.single("profilePicture"), profile
 router.get('/profile', authMiddleware, profileControllers.getUserProfile);
 router.get('/profile/:id', authMiddleware, profileControllers.getAnotherUsersProfile);
 router.get('/all-profiles', authMiddleware, profileControllers.getAllUsersProfile);
+router.get('/search', authMiddleware, profileControllers.searchProfiles);
+router.get('/profiles', authMiddleware, profileControllers.getProfilesBySenderIds);
 
 router.delete('/profile', authMiddleware, profileControllers.deleteUserProfile);
 

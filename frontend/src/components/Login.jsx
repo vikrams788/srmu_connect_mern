@@ -32,7 +32,10 @@ const Login = () => {
       console.log(response.data);
 
       const token = response.data.token2;
+      const user = response.data.user;
       localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      console.log(user);
 
       toast.success('Logged in successfully', {
         position: 'top-right',

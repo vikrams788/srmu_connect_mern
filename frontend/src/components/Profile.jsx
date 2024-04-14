@@ -5,53 +5,134 @@ import LeftComponent from './LeftComponent';
 import RightComponent from './RightComponent';
 import axios from 'axios';
 import Post from './Post';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineModeEditOutline } from "react-icons/md";
+import { FaUserPlus, FaUserCheck } from "react-icons/fa6";
+import { FaUserMinus } from "react-icons/fa";
+import { toast } from 'react-toastify';
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
+  const [showUnfriendIcon, setShowUnfriendIcon] = useState(false);
+  const { userId } = useParams();
+  const [friendRequest, sentFriendRequest] = useState(false);
+  const currentUser = JSON.parse(localStorage.getItem('profile'));
+  const user = JSON.parse(localStorage.getItem('user'));
+  const currentUserId = currentUser.createdBy;
 
   const navigate = useNavigate();
 
+  //Fetch user's profile info and posts
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/profile`, {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Credentials': true,
-          },
-        });
-        setUserData(response.data);
-      } catch (error) {
-        console.error('Error fetching user profile data:', error);
-      }
-    };
+        let profileEndpoint = '/api/profile';
+        let postsEndpoint = '/api/my-posts';
 
-    const fetchUserPosts = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/my-posts`, {
+        if (userId) {
+          profileEndpoint = `/api/profile/${userId}`;
+          postsEndpoint = `/api/posts/user/${userId}`;
+        }
+
+        const profileResponse = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}${profileEndpoint}`, {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Credentials': true,
           },
         });
-        setUserPosts(response.data);
+
+        const postsResponse = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}${postsEndpoint}`, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Credentials': true,
+          },
+        });
+
+        setUserData(profileResponse.data);
+        setUserPosts(postsResponse.data);
+
+        if (user && user.friends && profileResponse.data?.fullName) {
+          const isFriend = user.friends.some(friend => friend.fullName === profileResponse.data.fullName);
+          setShowUnfriendIcon(isFriend);
+        }
       } catch (error) {
-        console.error('Error fetching user posts:', error);
+        console.error('Error fetching user profile data or posts:', error);
       }
     };
 
     fetchUserData();
-    fetchUserPosts();
-  }, [userData]);
+  }, [user, user.friends, userData, userId]);
 
+  //Create Post
   const handleCreatePostClick = () => {
     navigate('/create-post');
   }
+
+  //Send Friend Request
+  const handleAddFriend = async () => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/friend-requests`, {
+        senderId: currentUserId,
+        recipientId: userData.createdBy,
+        fullName: currentUser.fullName,
+        profilePicture: currentUser.profilePicture
+      }, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Credentials': true,
+        },
+      });
+
+      toast.success('Friend request sent', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+      });
+
+      console.log('Friend request sent successfully:', response.data);
+
+      sentFriendRequest(true);
+    } catch (error) {
+      console.error('Error sending friend request:', error);
+    }
+  };
+
+  const handleRemoveFriend = async () => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/remove-friend`, {
+        userId: currentUserId,
+        friendId: userData.createdBy
+      }, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Credentials': true,
+        },
+      });
+
+      toast.success('Successfully removed as friend', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+      });
+
+      console.log('Friend removed successfully:', response.data);
+
+      setShowUnfriendIcon(false);
+    } catch (error) {
+      console.error('Error removing friend:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -68,9 +149,19 @@ const Profile = () => {
                   <img src={userData.profilePicture} alt="Profile" className="w-40 h-40 rounded-full mx-auto mb-4" />
                 </div>
                 <h1 className="text-2xl font-bold mb-4 mx-auto col-span-2">{userData.fullName}</h1>
-                <div className=' flex justify-between col-span-2 '>
+                <div className=' flex justify-between items-center col-span-2 '>
                   <p className="col-span-2"><span className="font-semibold">Bio:</span> {userData.bio}</p>
-                  <MdOutlineModeEditOutline className=' w-5 h-5 hover:text-blue-500 ' onClick={() => {navigate('/edit-profile')}}/>
+                  <p className='flex'>
+                    {showUnfriendIcon === false ? (
+                      <FaUserPlus className='w-6 h-6 text-blue-500 hover:text-blue-700 m-2' onClick={handleAddFriend}/>
+                    ) : (
+                      <FaUserCheck className='w-6 h-6 text-blue-500 hover:text-blue-700 m-2'/>
+                    )}
+                    {userData.userId === userData.createdBy && (
+                      <MdOutlineModeEditOutline className=' w-6 h-6 hover:text-blue-500 m-2' onClick={() => {navigate('/edit-profile')}}/>
+                    )}
+                    {showUnfriendIcon && (<FaUserMinus className=' w-6 h-6 hover:text-blue-600 m-2 text-blue-500' onClick={handleRemoveFriend}/>)}
+                  </p>
                 </div>
                 <p><span className="font-semibold">Email:</span> {userData.email}</p>
                 <p><span className="font-semibold">Course:</span> {userData.course}</p>

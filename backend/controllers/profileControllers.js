@@ -105,6 +105,20 @@ exports.getAllUsersProfile = async (req, res) => {
     }
 };
 
+exports.getProfilesBySenderIds = async (req, res) => {
+    try {
+        const { senderIds } = req.query;
+        const senderIdsArray = senderIds.split(',').map(id => id.trim());
+
+        const profiles = await Profile.find({ userId: { $in: senderIdsArray } });
+
+        res.status(200).json({ profiles });
+    } catch (error) {
+        console.error('Error fetching sender profiles:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 exports.deleteUserProfile = async (req, res) => {
     try {
         const userId = req.user.userId;
@@ -112,6 +126,27 @@ exports.deleteUserProfile = async (req, res) => {
         res.status(200).json({ message: 'User profile deleted successfully' });
     } catch (error) {
         console.error('Error deleting user profile:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.searchProfiles = async (req, res) => {
+    const { query } = req.query;
+
+    try {
+        const profiles = await Profile.find({
+        $or: [
+            { fullName: { $regex: query, $options: 'i' } },
+            { email: { $regex: query, $options: 'i' } },
+            { course: { $regex: query, $options: 'i' } },
+            { rollNumber: { $regex: query, $options: 'i' } },
+            { semester: parseInt(query) || 0 }
+        ]
+        });
+
+        res.status(200).json(profiles);
+    } catch (error) {
+        console.error('Error searching profiles:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

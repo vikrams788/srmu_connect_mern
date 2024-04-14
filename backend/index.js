@@ -9,6 +9,7 @@ const userRoutes = require('./routes/userRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const postRoutes = require('./routes/postRoutes');
 const commentRoutes = require('./routes/commentRoutes');
+const friendRequestRoutes = require('./routes/friendRequestRoutes');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -23,6 +24,7 @@ app.use('/api', userRoutes);
 app.use('/api', profileRoutes);
 app.use('/api', postRoutes);
 app.use('/api', commentRoutes);
+app.use('/api', friendRequestRoutes);
 
 db.connect();
 
