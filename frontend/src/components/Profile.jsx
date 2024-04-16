@@ -7,7 +7,7 @@ import axios from 'axios';
 import Post from './Post';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { FaUserPlus } from "react-icons/fa6";
+import { FaUserPlus, FaRegMessage } from "react-icons/fa6";
 import { FaUserMinus } from "react-icons/fa";
 import { toast } from 'react-toastify';
 import {Tooltip} from 'react-tooltip';
@@ -165,6 +165,12 @@ const Profile = () => {
                     data-tooltip-content="Unfriend"
                     />
                     <Tooltip id='unfriend-tooltip' />
+                    <FaRegMessage 
+                    className=' w-6 h-6 hover:text-blue-500 m-2 text-gray-700'
+                    data-tooltip-id="send-message-tooltip"
+                    data-tooltip-content="Send Message"
+                    />
+                    <Tooltip id='send-message-tooltip' />
                   </p>
                 </div>
                 <p><span className="font-semibold">Email:</span> {userData.email}</p>

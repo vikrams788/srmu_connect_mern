@@ -29,20 +29,18 @@ const Login = () => {
           'Access-Control-Allow-Credentials': true,
         },
       });
-      console.log(response.data);
 
       const token = response.data.token2;
       const user = response.data.user;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
-      console.log(user);
 
       toast.success('Logged in successfully', {
         position: 'top-right',
-        autoClose: 3000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
-        pauseOnHover: true,
+        pauseOnHover: false,
         draggable: true,
       });
       navigate('/');

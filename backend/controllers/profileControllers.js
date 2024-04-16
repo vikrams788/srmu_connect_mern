@@ -1,5 +1,6 @@
 const Profile = require('../models/Profile');
 const cloudinary = require('cloudinary').v2;
+const User = require('../models/User');
 
 
 exports.createUserProfile = async (req, res) => {
@@ -24,6 +25,11 @@ exports.createUserProfile = async (req, res) => {
         }
 
         await userProfile.save();
+
+        const user = await User.findByIdAndUpdate(userId, {
+            fullName: userProfileData.fullName,
+            profilePicture: userProfile.profilePicture || null
+        });
 
         res.status(201).json({ message: 'Profile Saved' })
 
@@ -56,6 +62,11 @@ exports.editUserProfile = async (req, res) => {
         }
 
         await userProfile.save();
+
+        const user = await User.findByIdAndUpdate(userId, {
+            fullName: userProfile.fullName,
+            profilePicture: userProfile.profilePicture || null
+        });
 
         res.status(200).json({ message: 'Profile updated successfully' });
     } catch (error) {

@@ -19,6 +19,13 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Profile',
     },
+    profilePicture: {
+        type: String
+    },
+    fullName: {
+        type: String
+
+    },
     pendingRequests: [
         {
             userId: {

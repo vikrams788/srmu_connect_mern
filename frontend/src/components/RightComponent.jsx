@@ -1,19 +1,56 @@
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+
 const RightComponent = () => {
-  const chats = [
-    { id: 1, sender: 'John', message: 'Hey there!' },
-    { id: 2, sender: 'Alice', message: 'Hi John!' },
-    { id: 3, sender: 'John', message: 'How are you?' },
-    { id: 4, sender: 'Alice', message: 'Im good, thanks!' },
-  ];
+  const [chats, setChats] = useState([]);
+
+  useEffect(() => {
+    const fetchChats = async () => {
+      try {
+        const response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/all-chats', {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Credentials': true,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch chats');
+        }
+
+        const data = await response.json();
+        setChats(data);
+      } catch (error) {
+        console.error('Error fetching chats:', error.message);
+      }
+    };
+
+    fetchChats();
+  }, []);
 
   return (
     <div className="bg-gray-200 p-4 rounded-lg">
       <h2 className="text-xl font-semibold mb-4">Chats</h2>
       <div className="overflow-y-auto max-h-96">
         {chats.map(chat => (
-          <div key={chat.id} className="mb-2">
-            <span className="font-semibold">{chat.sender}: </span>
-            <span>{chat.message}</span>
+          <div key={chat._id} className="mb-4 p-2 bg-white rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold">{chat.chatName}</h3>
+            <div className="flex items-center mt-2">
+              {!chat.isGroupChat && (
+                <img
+                  src={chat.users[0].profilePicture}
+                  alt={chat.users[0].fullName}
+                  className="w-8 h-8 rounded-full mr-2"
+                />
+              )}
+              <p className="text-gray-600">
+                {chat.isGroupChat ? 'Group chat' : chat.users[0].fullName}
+              </p>
+            </div>
+            {chat.latestMessage && (
+              <p className="text-sm text-gray-500 mt-2">{chat.latestMessage.content}</p>
+            )}
           </div>
         ))}
       </div>
