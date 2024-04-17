@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const userControllers = require('../controllers/userControllers');
 const authMiddleware = require('../middleware/authMiddleware');
-// const excelUpload = require('../middleware/excelUpload');
 const excelUpload = require('../middleware/excelUpload');
 
 router.get('/pending-requests/:userId', authMiddleware, userControllers.getPendingRequests);

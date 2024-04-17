@@ -192,31 +192,25 @@ exports.uploadExcelFile = async (req, res) => {
         const filePath = req.file.path;
         console.log(filePath);
 
-        // Load the workbook from the uploaded file
         const workbook = new exceljs.Workbook();
         await workbook.xlsx.readFile(filePath);
 
         let userData = [];
 
-        // Iterate over each worksheet in the workbook
         workbook.eachSheet((worksheet) => {
-            // Iterate over each row in the worksheet
             worksheet.eachRow((row, rowNumber) => {
-                // Skip the header row (assuming it's the first row)
                 if (rowNumber === 1) return;
         
-                const email = row.values[1]?.text; // Access email from row
+                const email = row.values[1]?.text;
                 const password = row.values[2];
                 const role = row.values[3];
         
-                // Check if all required fields (email, password, role) are present
                 if (email && password && role) {
                     userData.push({ email, password, role });
                 }
             });
         });
 
-        // Process each user data and save to the database
         await Promise.all(
             userData.map(async (user) => {
                 const { email, password, role } = user;
@@ -227,7 +221,7 @@ exports.uploadExcelFile = async (req, res) => {
         
                 if (!existingUser) {
                     const newUser = new User({ email, password: hashedPassword, role });
-                    console.log('New user:', newUser); // Log new user object
+                    console.log('New user:', newUser);
                     await newUser.save();
                 }
             })
@@ -235,7 +229,6 @@ exports.uploadExcelFile = async (req, res) => {
 
         fs.unlinkSync(filePath);
 
-        // Respond with success message
         res.status(201).json({ message: 'Users created successfully from Excel file' });
     } catch (error) {
         console.error('Error processing Excel file:', error);
