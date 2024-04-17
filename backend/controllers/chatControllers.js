@@ -2,29 +2,27 @@ const Chat = require('../models/Chat');
 const User = require('../models/User');
 
 exports.accessChat = async (req, res) => {
-    const userId = req.user.userId;
-    const { anotherUserId } = req.body;
+    const currentUserId = req.user.userId;
+    const { anotherUserName } = req.query;
 
-    const user = await User.findById(userId).populate('friends', '_id');
-    const anotherUser = await User.findById(anotherUserId);
+    const user = await User.findById(currentUserId);
+    const anotherUser = await User.findOne({fullName: anotherUserName});
 
     if (!user || !anotherUser) {
         return res.status(404).json({ message: 'User not found' });
     }
 
-    const isFriendOfUser = user.friends.some(friend => friend._id.equals(anotherUserId));
-    const isFriendOfAnotherUser = anotherUser.friends.some(friend => friend._id.equals(userId));
+    const isFriendOfUser = user.friends.some(function(friend){
+        return friend.fullName.includes(anotherUserName);
+    });
 
-    if (!isFriendOfUser || !isFriendOfAnotherUser) {
+    if (!isFriendOfUser) {
         return res.status(403).json({ message: 'You can only access chats with your friends' });
     }
 
     var isChat = await Chat.find({
         isGroupChat: false,
-        $and: [
-            {users: {$elemMatch: {$eq: userId}}},
-            {users: {$elemMatch: {$eq: anotherUserId}}}
-        ]
+        users: { $all: [currentUserId, anotherUser._id] }
     })
         .populate('users', '-password')
         .populate('latestMessage');
@@ -41,15 +39,16 @@ exports.accessChat = async (req, res) => {
             var chatData = {
                 chatName: 'sender',
                 isGroupChat: false,
-                users: [userId, anotherUserId]
+                users: [currentUserId, anotherUser._id]
             };
 
-            const createdChat = await Chat.save(chatData)
+            const createdChat = await Chat.create(chatData);
 
             const fullChat = await Chat.findOne({_id: createdChat._id}).populate('users', '-password')
 
             res.status(200).json(fullChat);
         } catch (error) {
+            console.log(error);
             res.status(500).json({message: 'Internal server error'});
         }
     }
@@ -57,7 +56,7 @@ exports.accessChat = async (req, res) => {
 
 exports.fetchChat = async (req, res) => {
     try {
-        Chat.find({users: {$elemMatch: {$eq: req.user.userId}}})
+        Chat.find({users: req.user.userId})
             .populate('users', '-password')
             .populate('groupAdmin', '-password')
             .populate('latestMessage')

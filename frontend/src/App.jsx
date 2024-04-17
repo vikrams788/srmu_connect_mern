@@ -7,7 +7,7 @@ import Profile from './components/Profile';
 import CreatePost from './components/CreatePost';
 import EditPost from './components/EditPost';
 import FriendRequests from './components/FriendRequests';
-import ChatPage from './components/ChatPage';
+import SingleChat from './components/SingleChat';
 
 function App() {
 
@@ -29,7 +29,7 @@ function App() {
         <Route path='/create-post' element={isLoggedIn ? <CreatePost /> : <Login />} />
         <Route path='/edit-post' element={isLoggedIn ? <EditPost /> : <Login />}/>
         <Route path='/friend-requests' element={isLoggedIn ? <FriendRequests /> : <Login />}/>
-        <Route path='/chat' element={isLoggedIn ? <ChatPage /> : <Login />}/>
+        <Route path='/chat' element={isLoggedIn ? <SingleChat /> : <Login />}/>
       </Routes>
     </BrowserRouter>
   )

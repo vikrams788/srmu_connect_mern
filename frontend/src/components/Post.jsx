@@ -72,6 +72,14 @@ const Post = ({ post }) => {
           },
           data: { userId: currentUserId },
         });
+        toast.success('Unliked', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+        });
         
         // setLiked(false);
         console.log('Post unliked');
@@ -83,6 +91,15 @@ const Post = ({ post }) => {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Credentials': true,
           },
+        });
+
+        toast.success('Post liked', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
         });
         // setLiked(true);
         console.log('Post liked');
@@ -122,10 +139,10 @@ const Post = ({ post }) => {
 
       toast.success('Comment added', {
         position: 'top-right',
-        autoClose: 3000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
-        pauseOnHover: true,
+        pauseOnHover: false,
         draggable: true,
       });
 

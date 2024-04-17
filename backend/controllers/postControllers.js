@@ -36,7 +36,7 @@ exports.createPost = async (req, res) => {
 exports.getCurrentUserPosts = async (req, res) => {
     try {
         const userId = req.user.userId;
-        const posts = await Post.find({ createdBy: userId });
+        const posts = await Post.find({ createdBy: userId }).sort({createdAt: -1});
 
         const postsWithCounts = await Promise.all(posts.map(async (post) => {
             const likesCount = post.likes.length;
@@ -62,7 +62,7 @@ exports.getCurrentUserPosts = async (req, res) => {
 
 exports.getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.find();
+        const posts = await Post.find().sort({createdAt: -1});
         const userId = req.user.userId;
 
         const postsWithCounts = await Promise.all(posts.map(async (post) => {
@@ -90,7 +90,7 @@ exports.getAllPosts = async (req, res) => {
 exports.getPostById = async (req, res) => {
     try {
         const postId = req.params.id;
-        const post = await Post.findById(postId);
+        const post = await Post.findById(postId).sort({createdAt: -1});
         const userId = req.user.userId;
 
         if (!post) {
@@ -121,7 +121,7 @@ exports.getAnotherUsersPosts = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const posts = await Post.find({ createdBy: id });
+        const posts = await Post.find({ createdBy: id }).sort({createdAt: -1});
 
         if (!posts || posts.length === 0) {
             return res.status(404).json({ message: 'No posts found for this user' });

@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const FriendRequest = require('../models/FriendRequest');
+const Post = require('../models/Post');
 
 exports.login = async (req, res) => {
     try {
@@ -90,6 +91,29 @@ exports.getPendingRequests = async (req, res) => {
         res.status(200).json({ pendingRequests });
     } catch (error) {
         console.error('Error fetching pending requests:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.getFriendsPosts = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        const userData = await User.findById(userId).sort({createdAt: -1});
+
+        if (!userData) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const friendUserIds = userData.friends.map(function(friend){
+            return friend.userId;
+        });
+
+        const friendsPosts = await Post.find({ createdBy: { $in: friendUserIds } });
+
+        res.status(200).json(friendsPosts);
+    } catch (error) {
+        console.error('Error fetching friends posts:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

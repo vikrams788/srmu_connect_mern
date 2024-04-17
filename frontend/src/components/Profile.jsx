@@ -126,6 +126,11 @@ const Profile = () => {
     }
   };
 
+  const handleChat = () => {
+    localStorage.setItem('anotherUserName', userData.fullName);
+    navigate('/chat');
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -169,6 +174,7 @@ const Profile = () => {
                     className=' w-6 h-6 hover:text-blue-500 m-2 text-gray-700'
                     data-tooltip-id="send-message-tooltip"
                     data-tooltip-content="Send Message"
+                    onClick={handleChat}
                     />
                     <Tooltip id='send-message-tooltip' />
                   </p>
