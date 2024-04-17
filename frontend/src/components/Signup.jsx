@@ -12,6 +12,7 @@ const Signup = () => {
     password: '',
     confirmPassword: '',
   });
+  const userData = JSON.parse(localStorage.getItem('user'));
   
   const [multipleUsersFormData, setMultipleUsersFormData] = useState({
     userDataFile: null,
@@ -50,7 +51,7 @@ const Signup = () => {
           draggable: true,
         });
 
-        navigate('/');
+        navigate('/edit-profile');
 
         console.log(response.data);
     } catch (error) {
@@ -65,7 +66,7 @@ const Signup = () => {
       const data = new FormData();
       data.append('userDataFile', multipleUsersFormData.userDataFile);
   
-      console.log('FormData:', multipleUsersFormData.userDataFile); // Verify FormData object before making the request
+      console.log('FormData:', multipleUsersFormData.userDataFile);
   
       const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/bulk-user-upload', data, {
         withCredentials: true,
@@ -104,20 +105,24 @@ const Signup = () => {
             </div>
             <h2 className="text-2xl mb-4 font-semibold text-center">Signup</h2>
             {error && <div className="text-red-500 text-sm mb-4 mx-auto">{error}</div>}
-            <div className="mb-4 flex justify-center items-center">
-              <button
-                className={`py-2 px-4 rounded mr-4 focus:outline-none ${isSingleUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-                onClick={() => setIsSingleUser(true)}
-              >
-                Single User
-              </button>
-              <button
-                className={`py-2 px-4 rounded focus:outline-none ${!isSingleUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-                onClick={() => setIsSingleUser(false)}
-              >
-                Multiple Users
-              </button>
-            </div>
+            {userData.role === 'admin' || userData.role === 'teacher' ? (
+              <div className="mb-4 flex justify-center items-center">
+                <button
+                  className={`py-2 px-4 rounded mr-4 focus:outline-none ${isSingleUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                  onClick={() => setIsSingleUser(true)}
+                >
+                  Single User
+                </button>
+                <button
+                  className={`py-2 px-4 rounded focus:outline-none ${!isSingleUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                  onClick={() => setIsSingleUser(false)}
+                >
+                  Multiple Users
+                </button>
+              </div>
+            ) : (
+              <p className="text-red-500 text-sm mb-4 mx-auto">You do not have permission to upload multiple users.</p>
+            )}
             {isSingleUser ? (
               <form onSubmit={handleSubmitSingleUser} id="signupFormSingleUser">
                 <div className="mb-4">

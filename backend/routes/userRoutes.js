@@ -10,7 +10,7 @@ router.get('/posts/user/friends', authMiddleware, userControllers.getFriendsPost
 
 router.post('/signup', userControllers.signup);
 
-router.post('/bulk-user-upload', excelUpload.single('userDataFile'), userControllers.uploadExcelFile);
+router.post('/bulk-user-upload', authMiddleware, excelUpload.single('userDataFile'), userControllers.uploadExcelFile);
 
 router.post('/login', userControllers.login);
 

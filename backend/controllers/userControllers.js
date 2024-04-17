@@ -4,7 +4,6 @@ const User = require('../models/User');
 const FriendRequest = require('../models/FriendRequest');
 const Post = require('../models/Post');
 const exceljs = require('exceljs');
-const csv = require('csv-parser');
 const fs = require('fs');
 const axios = require('axios');
 

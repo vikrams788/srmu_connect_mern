@@ -20,7 +20,6 @@ const Profile = () => {
   const currentUserId = currentUser.createdBy;
 
   const navigate = useNavigate();
-
   //Fetch user's profile info and posts
   useEffect(() => {
     const fetchUserData = async () => {

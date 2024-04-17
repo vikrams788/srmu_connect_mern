@@ -10,7 +10,7 @@ import Post from './Post';
 function Home() {
   const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
-  const userData = JSON.parse(localStorage.getItem('user'));
+  const [userData, setUserData] = useState()
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -22,6 +22,7 @@ function Home() {
             'Access-Control-Allow-Credentials': true,
           },
         });
+        setUserData(response.data)
         const userProfile = response.data;
         localStorage.setItem('profile', JSON.stringify(userProfile));
       } catch (error) {

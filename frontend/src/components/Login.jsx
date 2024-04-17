@@ -43,6 +43,7 @@ const Login = () => {
         pauseOnHover: false,
         draggable: true,
       });
+
       navigate('/');
     } catch (error) {
       console.error('Error in login:', error.response.data.message);
