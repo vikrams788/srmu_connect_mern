@@ -125,10 +125,10 @@ const CreatePost = ({post}) => {
       <Header />
       <div className="container mx-auto mt-4 flex-grow">
         <div className="md:flex md:justify-between">
-          <div className="md:w-1/4 hidden md:block">
+          <div className="md:w-1/6 hidden md:block">
             <LeftComponent />
           </div>
-          <div className="md:w-3/4">
+          <div className="md:w-2/3">
             <div className="bg-white shadow-md rounded-lg px-4 py-6 md:px-8 md:py-8 mb-4">
               <div className="mx-auto rounded-full overflow-hidden" style={{ height: "200px", width: "200px" }}>
                 <img src={userProfile.profilePicture} alt="Profile" className="object-cover w-full h-full" style={{ borderRadius: '100%' }} />
@@ -191,7 +191,7 @@ const CreatePost = ({post}) => {
               </form>)}
             </div>
           </div>
-          <div className="md:w-1/4 hidden md:block">
+          <div className="md:w-1/6 hidden md:block">
             <RightComponent />
           </div>
         </div>

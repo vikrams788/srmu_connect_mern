@@ -1,0 +1,122 @@
+[
+    {
+    "imageUrl": "/src/assets/algebra.jpeg",
+    "bookName": "Algebra - A Computational Introduction",
+    "authorName": "John Scherk",
+    "url": "http://www.math.toronto.edu/scherk/book.pdf"
+    },
+    {
+    "imageUrl": "/src/assets/algebraic-geometry.jpeg",
+    "bookName": "THE RISING SEA: Foundations of Algebraic Geometry",
+    "authorName": "Ravi Vakil",
+    "url": "http://math.stanford.edu/~vakil/216blog/index.html"
+    },
+    {
+    "imageUrl": "/src/assets/applied-ststistics.jpeg",
+    "bookName": "Applied Statistics with R",
+    "authorName": "David Dalpiaz",
+    "url": "https://daviddalpiaz.github.io/appliedstats/applied_statistics.pdfr"
+    },
+    {
+    "imageUrl": "/src/assets/college-algebra.jpeg",
+    "bookName": "College Algebra",
+    "authorName": "Jay Abramson",
+    "url": "https://www.uco.edu/cms/files/math-college-algebra--fa17-uco.pdf"
+    },
+    {
+    "imageUrl": "/src/assets/data-science-at-cmd.jpeg",
+    "bookName": "Data Science At Command Line",
+    "authorName": "Jeoren Janssens",
+    "url": "https://datascienceatthecommandline.com/2e/"
+    },
+    {
+    "imageUrl": "/src/assets/discrete-mathematics.jpeg",
+    "bookName": "Discrete Mathematics",
+    "authorName": "Oscar Levin",
+    "url": "http://discrete.openmathbooks.org/dmoi3.html"
+    },
+    {
+    "imageUrl": "/src/assets/data-structures-and-programming.jpeg",
+    "bookName": "Data Structures And Programming Techniques",
+    "authorName": "James Aspens",
+    "url": "https://www.cs.yale.edu/homes/aspnes/classes/223/notes.html"
+    },
+    {
+    "imageUrl": "/src/assets/elementary-algebra.jpeg",
+    "bookName": "Elementary Algebra",
+    "authorName": "John Redden",
+    "url": "https://resources.saylor.org/wwwresources/archived/site/textbooks/Elementary%20Algebra.pdf"
+    },
+    {
+    "imageUrl": "/src/assets/foundations-discrete-maths.jpeg",
+    "bookName": "Mathematical Foundations And Aspects of Discrete Mathematics",
+    "authorName": "Jean H. Gallier",
+    "url": "https://www.cis.upenn.edu/~jean/discmath-root-b.pdf"
+    },
+    {
+    "imageUrl": "/src/assets/intro-modern-algebra.jpeg",
+    "bookName": "Introduction to Modern Agebra",
+    "authorName": "David Joyce",
+    "url": "https://mathcs.clarku.edu/~djoyce/ma225/algebra.pdf"
+    },
+    {
+    "imageUrl": "/src/assets/introductory-statistics.jpeg",
+    "bookName": "Introductoy Statistics",
+    "authorName": "Matasano Security",
+    "url": "https://saylordotorg.github.io/text_introductory-statistics/index.html"
+    },
+    {
+    "imageUrl": "/src/assets/iot-security.jpeg",
+    "bookName": "Demistifying Internet of Things Security",
+    "authorName": "Sunil Cheruvu, Anil Kumar, Ned Smith, Dave Wheeler",
+    "url": "https://link.springer.com/book/10.1007/978-1-4842-2896-8"
+    },
+    {
+    "imageUrl": "/src/assets/isomorphism.jpeg",
+    "bookName": "Isomorphism - Mathematics of Programming",
+    "authorName": "Liu Xinyu",
+    "url": "https://github.com/liuxinyu95/unplugged/files/6754569/unplugged-en.pdf"
+    },
+    {
+    "imageUrl": "/src/assets/learn-to-code-with-scratch.jpeg",
+    "bookName": "Learn to Code with scratch",
+    "authorName": "Phil Ling",
+    "url": "https://magpi.raspberrypi.com/books/essentials-scratch-v1"
+    },
+    {
+    "imageUrl": "/src/assets/open-workshop-cryptography.jpeg",
+    "bookName": "Open workshop on Cryptography",
+    "authorName": "Jonathan A. Poritz",
+    "url": "https://www.poritz.net/jonathan/share/owoc.pdf"
+    },
+    {
+    "imageUrl": "/src/assets/practical-cryptography.jpeg",
+    "bookName": "Practical Cryptography",
+    "authorName": "Svetlin Nakov",
+    "url": "https://cryptobook.nakov.com/"
+    },
+    {
+    "imageUrl": "/src/assets/practical-python-programming.jpeg",
+    "bookName": "A Practical Introduction to Python Programming",
+    "authorName": "Brian Heinold",
+    "url": "https://www.brianheinold.net/python/A_Practical_Introduction_to_Python_Programming_Heinold.pdf"
+    },
+    {
+    "imageUrl": "/src/assets/randomized-algo.jpeg",
+    "bookName": "Randomized Algorithms",
+    "authorName": "James Aspens",
+    "url": "http://www.cs.yale.edu/homes/aspnes/classes/469/notes.pdf"
+    },
+    {
+    "imageUrl": "/src/assets/shape-interrogation.jpeg",
+    "bookName": "Shape Interrogation for Computer Aided Design and Manufacturing",
+    "authorName": "Wonjoon Cho, Takashi Maekawa, Nicholas M. Patrikalakis",
+    "url": "http://web.mit.edu/hyperbook/Patrikalakis-Maekawa-Cho/"
+    },
+    {
+    "imageUrl": "/src/assets/theory-of-distributed-systems.jpeg",
+    "bookName": "Theory of Distributed Systems",
+    "authorName": "James Aspens",
+    "url": "http://www.cs.yale.edu/homes/aspnes/classes/465/notes.pdf"
+    }
+  ]  

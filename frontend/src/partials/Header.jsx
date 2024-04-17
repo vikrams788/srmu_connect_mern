@@ -126,6 +126,7 @@ function Header() {
                 <Link to="/profile" className="block px-4 py-2 mx-2 text-gray-800 hover:bg-gray-100">Profile</Link>
                 <Link to="/friends" className="block px-4 py-2 mx-2 text-gray-800 hover:bg-gray-100">Friends</Link>
                 <Link to="/chat" className="block px-4 py-2 mx-2 text-gray-800 hover:bg-gray-100">Chat</Link>
+                <Link to="/e-library" className="block px-4 py-2 mx-2 text-gray-800 hover:bg-gray-100">Library</Link>
                 <span onClick={handleLogout} className="block px-4 py-2 mx-2 text-gray-800 hover:bg-gray-100 cursor-pointer">Logout</span>
               </div>
             )}
@@ -135,6 +136,7 @@ function Header() {
             <Link to="/profile" className="text-white px-3 py-2 rounded-md text-sm font-medium">Profile</Link>
             <Link to="/friend-requests" className="text-white px-3 py-2 rounded-md text-sm font-medium">Friend Requests</Link>
             <Link to="/chat" className="text-white px-3 py-2 rounded-md text-sm font-medium">Chat</Link>
+            <Link to="/e-library" className="text-white px-3 py-2 rounded-md text-sm font-medium">Library</Link>
             <span onClick={handleLogout} className="text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer">Logout</span>
           </div>
         </div>

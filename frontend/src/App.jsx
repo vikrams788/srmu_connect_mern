@@ -8,6 +8,7 @@ import CreatePost from './components/CreatePost';
 import EditPost from './components/EditPost';
 import FriendRequests from './components/FriendRequests';
 import SingleChat from './components/SingleChat';
+import Library from './components/Library';
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
         <Route path='/edit-post' element={isLoggedIn ? <EditPost /> : <Login />}/>
         <Route path='/friend-requests' element={isLoggedIn ? <FriendRequests /> : <Login />}/>
         <Route path='/chat' element={isLoggedIn ? <SingleChat /> : <Login />}/>
+        <Route path='/e-library' element={isLoggedIn ? <Library /> : <Login />}/>
       </Routes>
     </BrowserRouter>
   )
