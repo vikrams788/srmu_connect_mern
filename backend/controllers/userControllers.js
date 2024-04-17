@@ -3,6 +3,10 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const FriendRequest = require('../models/FriendRequest');
 const Post = require('../models/Post');
+const exceljs = require('exceljs');
+const csv = require('csv-parser');
+const fs = require('fs');
+const axios = require('axios');
 
 exports.login = async (req, res) => {
     try {
@@ -173,6 +177,68 @@ exports.removeFriend = async (req, res) => {
         res.status(200).json({ message: 'Friend removed successfully' });
     } catch (error) {
         console.error('Error removing friend:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.uploadExcelFile = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+
+        console.log(req.file);
+
+        const filePath = req.file.path;
+        console.log(filePath);
+
+        // Load the workbook from the uploaded file
+        const workbook = new exceljs.Workbook();
+        await workbook.xlsx.readFile(filePath);
+
+        let userData = [];
+
+        // Iterate over each worksheet in the workbook
+        workbook.eachSheet((worksheet) => {
+            // Iterate over each row in the worksheet
+            worksheet.eachRow((row, rowNumber) => {
+                // Skip the header row (assuming it's the first row)
+                if (rowNumber === 1) return;
+        
+                const email = row.values[1]?.text; // Access email from row
+                const password = row.values[2];
+                const role = row.values[3];
+        
+                // Check if all required fields (email, password, role) are present
+                if (email && password && role) {
+                    userData.push({ email, password, role });
+                }
+            });
+        });
+
+        // Process each user data and save to the database
+        await Promise.all(
+            userData.map(async (user) => {
+                const { email, password, role } = user;
+                console.log('Processing user:', email);
+        
+                const existingUser = await User.findOne({ email });
+                const hashedPassword = await bcrypt.hash(password, 10);
+        
+                if (!existingUser) {
+                    const newUser = new User({ email, password: hashedPassword, role });
+                    console.log('New user:', newUser); // Log new user object
+                    await newUser.save();
+                }
+            })
+        );
+
+        fs.unlinkSync(filePath);
+
+        // Respond with success message
+        res.status(201).json({ message: 'Users created successfully from Excel file' });
+    } catch (error) {
+        console.error('Error processing Excel file:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

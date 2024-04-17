@@ -5,6 +5,7 @@ const db = require('./db');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const path = require('path');
 const userRoutes = require('./routes/userRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const postRoutes = require('./routes/postRoutes');
@@ -21,6 +22,7 @@ app.use(cors({
     credentials: true,
 }));
 app.use(cookieParser());
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // routes
 app.use('/api', userRoutes);

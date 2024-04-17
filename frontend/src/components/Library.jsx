@@ -25,7 +25,7 @@ const Library = () => {
   const displayedBooks = books.slice(pageNumber * booksPerPage, (pageNumber + 1) * booksPerPage);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-white">
       <Header />
 
       <div className="flex flex-col lg:flex-row">
@@ -35,7 +35,7 @@ const Library = () => {
 
         <div className="w-full lg:w-2/3 p-4">
           <h1 className="text-3xl font-bold text-center mb-8 py-10">Welcome to the E-Library</h1>
-          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {displayedBooks.map((book, index) => (
               <Book
                 key={index}
