@@ -10,7 +10,7 @@ import ReactPaginate from 'react-paginate';
 const Library = () => {
   const [books, setBooks] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
-  const booksPerPage = 10;
+  const booksPerPage = 12;
 
   useEffect(() => {
     setBooks(booksData);

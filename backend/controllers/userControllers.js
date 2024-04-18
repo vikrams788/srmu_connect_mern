@@ -186,10 +186,7 @@ exports.uploadExcelFile = async (req, res) => {
             return res.status(400).json({ message: 'No file uploaded' });
         }
 
-        console.log(req.file);
-
         const filePath = req.file.path;
-        console.log(filePath);
 
         const workbook = new exceljs.Workbook();
         await workbook.xlsx.readFile(filePath);

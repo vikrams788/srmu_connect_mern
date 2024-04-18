@@ -148,21 +148,12 @@ const Profile = () => {
                 <div className=' flex justify-between items-center col-span-2 '>
                   <p className="col-span-2"><span className="font-semibold">Bio:</span> {userData.bio}</p>
                   <p className='flex'>
-                    <FaUserPlus 
-                    className='w-6 h-6 text-gray-700 hover:text-blue-500 m-2' 
-                    onClick={handleAddFriend}
-                    data-tooltip-id="add-friend-tooltip"
-                    data-tooltip-content="Add Friend"
-                    />
-                    <Tooltip id='add-friend-tooltip' />
-                    <MdOutlineModeEditOutline 
-                    className=' w-6 h-6 hover:text-blue-500 text-gray-700 m-2' 
-                    onClick={() => {navigate('/edit-profile')}}
-                    data-tooltip-id="edit-profile-tooltip"
-                    data-tooltip-content="Edit Profile"
-                    />
-                    <Tooltip id='edit-profile-tooltip' />
-                    <FaUserMinus 
+                    {userData.createdBy !== currentUserId && (<><FaUserPlus
+                        className='w-6 h-6 text-gray-700 hover:text-blue-500 m-2'
+                        onClick={handleAddFriend}
+                        data-tooltip-id="add-friend-tooltip"
+                        data-tooltip-content="Add Friend" /><Tooltip id='add-friend-tooltip' />
+                        <FaUserMinus 
                     className=' w-6 h-6 hover:text-blue-500 m-2 text-gray-700' 
                     onClick={handleRemoveFriend}
                     data-tooltip-id="unfriend-tooltip"
@@ -176,6 +167,12 @@ const Profile = () => {
                     onClick={handleChat}
                     />
                     <Tooltip id='send-message-tooltip' />
+                        </>)}
+                    { userData.createdBy === currentUserId && (<><MdOutlineModeEditOutline
+                      className=' w-6 h-6 hover:text-blue-500 text-gray-700 m-2'
+                      onClick={() => { navigate('/edit-profile'); } }
+                      data-tooltip-id="edit-profile-tooltip"
+                      data-tooltip-content="Edit Profile" /><Tooltip id='edit-profile-tooltip' /></>)}
                   </p>
                 </div>
                 <p><span className="font-semibold">Email:</span> {userData.email}</p>

@@ -116,28 +116,21 @@ function Header() {
               </ul>
             </div>
           )}
-          <div className="md:hidden relative">
+          <div className="relative">
             <button onClick={toggleDropdown} className="text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none">
               <IoMdMenu size={30} />
             </button>
             {dropdownOpen && (
-              <div ref={dropdownRef} className="absolute z-10 top-16 right-0 bg-white border rounded-md shadow-lg py-1 dropdown-menu">
-                <Link to="/" className="block px-4 py-2 mx-2 text-gray-800 hover:bg-gray-100">Home</Link>
-                <Link to="/profile" className="block px-4 py-2 mx-2 text-gray-800 hover:bg-gray-100">Profile</Link>
-                <Link to="/friends" className="block px-4 py-2 mx-2 text-gray-800 hover:bg-gray-100">Friends</Link>
-                <Link to="/chat" className="block px-4 py-2 mx-2 text-gray-800 hover:bg-gray-100">Chat</Link>
-                <Link to="/e-library" className="block px-4 py-2 mx-2 text-gray-800 hover:bg-gray-100">Library</Link>
-                <span onClick={handleLogout} className="block px-4 py-2 mx-2 text-gray-800 hover:bg-gray-100 cursor-pointer">Logout</span>
+              <div ref={dropdownRef} className="absolute z-10 top-16 p-4 right-0 bg-white border rounded-md shadow-lg py-1 dropdown-menu">
+                <Link to="/" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Home</Link>
+                <Link to="/profile" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Profile</Link>
+                <Link to="/friend-requests" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Friends</Link>
+                <Link to="/chat" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Chat</Link>
+                <Link to="/e-library" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Library</Link>
+                <Link to="/signup" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Add User</Link>
+                <span onClick={handleLogout} className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100 cursor-pointer">Logout</span>
               </div>
             )}
-          </div>
-          <div className="hidden md:flex">
-            <Link to="/" className="text-white px-3 py-2 rounded-md text-sm font-medium">Home</Link>
-            <Link to="/profile" className="text-white px-3 py-2 rounded-md text-sm font-medium">Profile</Link>
-            <Link to="/friend-requests" className="text-white px-3 py-2 rounded-md text-sm font-medium">Friend Requests</Link>
-            <Link to="/chat" className="text-white px-3 py-2 rounded-md text-sm font-medium">Chat</Link>
-            <Link to="/e-library" className="text-white px-3 py-2 rounded-md text-sm font-medium">Library</Link>
-            <span onClick={handleLogout} className="text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer">Logout</span>
           </div>
         </div>
       </div>

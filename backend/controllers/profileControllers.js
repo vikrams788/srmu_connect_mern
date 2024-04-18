@@ -1,6 +1,7 @@
 const Profile = require('../models/Profile');
 const cloudinary = require('cloudinary').v2;
 const User = require('../models/User');
+const excel = require('exceljs');
 
 
 exports.createUserProfile = async (req, res) => {
@@ -35,6 +36,47 @@ exports.createUserProfile = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ message: 'An error occurred', error: error.message });
+    }
+};
+
+exports.uploadMultipleProfiles = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+
+        const workbook = new excel.Workbook();
+        const filePath = req.file.path;
+
+        await workbook.xlsx.readFile(filePath);
+
+        const worksheet = workbook.getWorksheet(1);
+        const headers = ['fullName', 'rollNo', 'course', 'semester'];
+
+        const profiles = [];
+
+        worksheet.eachRow((row, rowIndex) => {
+        if (rowIndex > 1) {
+            const profileData = {};
+
+            row.eachCell((cell, colIndex) => {
+            const header = headers[colIndex - 1];
+
+            if (header) {
+                profileData[header] = cell.value || '';
+            }
+            });
+
+            profiles.push(profileData);
+        }
+        });
+
+        await Profile.insertMany(profiles);
+
+        res.status(201).json({ message: 'Profiles uploaded successfully', profiles });
+    } catch (error) {
+        console.error('Error uploading profiles:', error);
+        res.status(500).json({ error: 'Failed to upload profiles. Please try again.' });
     }
 };
 

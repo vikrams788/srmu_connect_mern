@@ -7,6 +7,11 @@ const teacherProfileSchema = new mongoose.Schema({
     employeeId: { type: String, required: true, unique: true },
     bio: { type: String },
     profilePicture: { type: String },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    }
 });
 
 const TeacherProfile = mongoose.model('TeacherProfile', teacherProfileSchema);

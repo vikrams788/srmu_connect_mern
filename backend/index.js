@@ -13,11 +13,12 @@ const commentRoutes = require('./routes/commentRoutes');
 const friendRequestRoutes = require('./routes/friendRequestRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const teacherProfileRoutes = require('./routes/teacherProfileRoutes');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({
-    origin: "https://srmu-connect-mern-self.vercel.app",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }));
@@ -32,6 +33,7 @@ app.use('/api', commentRoutes);
 app.use('/api', friendRequestRoutes);
 app.use('/api', chatRoutes);
 app.use('/api', messageRoutes);
+app.use('/api', teacherProfileRoutes);
 
 db.connect();
 
@@ -45,7 +47,7 @@ const server = app.listen(PORT, () => {
 const io = require('socket.io')(server, {
   pingTimeout: 60000,
   cors: {
-    orgin: 'https://srmu-connect-mern-self.vercel.app'
+    orgin: 'http://localhost:5173'
   }
 })
 

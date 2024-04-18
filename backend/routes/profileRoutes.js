@@ -3,8 +3,10 @@ const router = express.Router();
 const profileControllers = require('../controllers/profileControllers');
 const { upload } = require('../middleware/multerMiddleware');
 const authMiddleware = require('../middleware/authMiddleware');
+const excelUpload = require('../middleware/excelUpload');
 
 router.post('/profile', authMiddleware, upload.single("profilePicture"), profileControllers.createUserProfile);
+router.post('/profile/bulk-profile-upload', authMiddleware, excelUpload.single("profilePicture"), profileControllers.uploadMultipleProfiles);
 
 router.get('/profile', authMiddleware, profileControllers.getUserProfile);
 router.get('/profile/:id', authMiddleware, profileControllers.getAnotherUsersProfile);
