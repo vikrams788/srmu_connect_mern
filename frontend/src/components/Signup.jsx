@@ -23,6 +23,14 @@ const Signup = () => {
 
   const handleSubmitSingleUser = async (e) => {
     e.preventDefault();
+
+    const validEmailPattern = /\.stdnt@srmu\.ac\.in$/;
+    const isEmailValid = validEmailPattern.test(singleUserFormData.email);
+
+    if (!isEmailValid) {
+      setError('Please enter a valid student email ID');
+      return;
+    }
     try {
         const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/signup', singleUserFormData, {
           withCredentials: true,

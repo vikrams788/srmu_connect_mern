@@ -53,8 +53,11 @@ exports.signup = async (req, res) => {
         }
     
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        const isStudentEmail = email.endsWith('.stdnt@srmu.ac.in');
+        const role = isStudentEmail ? 'student' : 'teacher';
     
-        const newUser = new User({ email, password: hashedPassword });
+        const newUser = new User({ email, password: hashedPassword, role });
         await newUser.save();
 
         if(req.user){
