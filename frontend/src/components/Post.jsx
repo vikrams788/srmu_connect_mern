@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 const Post = ({ post }) => {
   const navigate = useNavigate();
   const [creatorProfile, setCreatorProfile] = useState(null);
-  // const [liked, setLiked] = useState(post.isLiked);
+  const [liked, setLiked] = useState(post.isLiked);
   const [showComments, setShowComments] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [newComment, setNewComment] = useState({
@@ -34,13 +34,17 @@ const Post = ({ post }) => {
           },
         });
         setCreatorProfile(response.data);
+        const currentUserId = userProfile.createdBy;
+        setLiked(post.likes.some(function(like){
+          return like.likedBy == currentUserId
+        }));
       } catch (error) {
         console.error('Error fetching creator profile:', error);
       }
     };
 
     fetchCreatorProfile();
-  }, [post.createdBy]);
+  }, [post.createdBy, post.likes, userProfile.createdBy]);
 
   // useEffect(() => {
   //   // Check if the current user has liked this post
@@ -81,7 +85,7 @@ const Post = ({ post }) => {
           draggable: true,
         });
         
-        // setLiked(false);
+        setLiked(false);
         console.log('Post unliked');
       } else {
         // Like the post
@@ -101,7 +105,7 @@ const Post = ({ post }) => {
           pauseOnHover: false,
           draggable: true,
         });
-        // setLiked(true);
+        setLiked(true);
         console.log('Post liked');
       }
     } catch (error) {
@@ -224,7 +228,7 @@ const Post = ({ post }) => {
       <div className="flex items-center mt-4">
         <span className="mr-2 flex items-center text-gray-500">
           {post.likes.length} Likes
-          {post.isLiked === true ? (
+          {liked === true ? (
             <AiFillLike className="ml-1 text-blue-500 w-4 h-4" onClick={handleLike} />
           ) : (
             <AiOutlineLike className="ml-1 hover:text-blue-500 w-4 h-4" onClick={handleLike} />

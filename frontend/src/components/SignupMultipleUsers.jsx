@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Footer from '../partials/Footer';
 import Header from '../partials/Header';
@@ -13,6 +13,8 @@ function SignupMultipleUsers() {
   });
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
   const handleMultipleUsersFileChange = (e) => {
     const file = e.target.files[0];
@@ -53,9 +55,17 @@ function SignupMultipleUsers() {
     }
   };
 
+  useEffect(() => {
+    if(user.role === 'admin' || user.role === 'teacher') {
+      setShowAdminFeatures(true);
+    } else {
+      setShowAdminFeatures(false);
+    }
+  }, [user.role])
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header isAdmin={showAdminFeatures}/>
       <div className="flex-grow flex items-center justify-center">
         <div className="w-full max-w-md mx-auto">
           <div className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 flex flex-col">

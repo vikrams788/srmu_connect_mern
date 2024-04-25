@@ -20,6 +20,7 @@ const Profile = () => {
   const currentUserData = JSON.parse(localStorage.getItem('user'));
   const currentUserId = currentUser.createdBy;
   const [areFriends, setAreFriends] = useState(false);
+  const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
   const navigate = useNavigate();
   //Fetch user's profile info and posts
@@ -63,13 +64,19 @@ const Profile = () => {
           }
         }
 
+        if(currentUserData.role === 'admin' || currentUserData.role === 'teacher') {
+          setShowAdminFeatures(true);
+        } else {
+          setShowAdminFeatures(false);
+        }
+
       } catch (error) {
         console.error('Error fetching user profile data or posts:', error);
       }
     };
 
     fetchUserData();
-  }, [currentUser?.fullName, currentUserData?.friends, userData?.fullName, userId]);
+  }, [currentUser?.fullName, currentUserData?.friends, currentUserData.role, userData?.fullName, userId]);
 
   //Create Post
   const handleCreatePostClick = () => {
@@ -146,7 +153,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header isAdmin={showAdminFeatures}/>
       <div className="container mx-auto max-h-screen py-8 flex-grow">
         <div className="flex max-h-screen flex-wrap">
           <div className="w-full md:w-1/6 overflow-y-auto overflow-x-hidden h-screen hidden md:block custom-scrollbar">

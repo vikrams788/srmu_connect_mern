@@ -13,6 +13,8 @@ const FriendRequests = () => {
     const [profiles, setProfiles] = useState([]);
     const currentUser = JSON.parse(localStorage.getItem('profile'));
     const currentUserId = currentUser.createdBy;
+    const user = JSON.parse(localStorage.getItem('user'));
+    const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
     useEffect(() => {
         const fetchPendingRequests = async () => {
@@ -49,7 +51,12 @@ const FriendRequests = () => {
 
         fetchPendingRequests();
         fetchAllProfiles();
-    }, [currentUserId, pendingRequests]);
+        if(user.role === 'admin' || user.role === 'teacher') {
+            setShowAdminFeatures(true);
+        } else {
+            setShowAdminFeatures(false);
+        }
+    }, [currentUserId, pendingRequests, user.role]);
 
     const sendFriendRequest = async (recipientId) => {
         const senderId = currentUserId;
@@ -84,7 +91,7 @@ const FriendRequests = () => {
 
     return (
         <div className="min-h-screen flex flex-col">
-            <Header />
+            <Header isAdmin = {showAdminFeatures}/>
             <div className="container mx-auto py-8 flex-grow">
                 <div className="flex flex-col justify-evenly md:flex-row">
                     <div className="w-full md:w-1/6 md:block hidden custom-scrollbar">

@@ -20,6 +20,8 @@ const EditProfileForm = () => {
     profilePicture: null,
   });
   const [profileData, setProfileData] = useState(null);
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -36,6 +38,11 @@ const EditProfileForm = () => {
         if(response){
           setSingleProfileFormData(response.data);
         }
+        if(user.role === 'admin' || user.role === 'teacher') {
+          setShowAdminFeatures(true);
+        } else {
+          setShowAdminFeatures(false);
+        }
       } catch (error) {
         console.error('Error fetching profile data:', error.message);
         toast.error('Failed to fetch profile data. Please try again.');
@@ -43,7 +50,7 @@ const EditProfileForm = () => {
     };
 
     fetchProfileData();
-  }, []);
+  }, [user.role]);
 
   const handleSingleProfileChange = (event) => {
     const { name, value, files } = event.target;
@@ -103,7 +110,7 @@ const EditProfileForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header isAdmin={showAdminFeatures}/>
       <div className="container my-auto flex-grow mx-auto mt-4">
         <div className="md:flex md:justify-evenly">
           <div className="md:w-1/3 hidden md:block">

@@ -12,6 +12,8 @@ const SingleChat = () => {
   const [socket, setSocket] = useState(null);
   const [chat, setChat] = useState(null)
   const anotherUserName = localStorage.getItem('anotherUserName');
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
   useEffect(() => {
     const fetchChatInfo = async () => {
@@ -55,6 +57,12 @@ const SingleChat = () => {
 
     fetchMessages(); // Fetch messages for the selected chat
 
+    if(user.role === 'admin' || user.role === 'teacher') {
+      setShowAdminFeatures(true);
+    } else {
+      setShowAdminFeatures(false);
+    }
+
     // Initialize WebSocket connection
     const newSocket = io(import.meta.env.VITE_REACT_APP_API_URL);
     setSocket(newSocket);
@@ -65,7 +73,8 @@ const SingleChat = () => {
         socket.disconnect();
       }
     };
-  }, [anotherUserName, socket]);
+    
+  }, [anotherUserName, chat._id, socket, user.role]);
 
   useEffect(() => {
     // Listen for new messages from socket.io
@@ -98,6 +107,7 @@ const SingleChat = () => {
           'Access-Control-Allow-Credentials': true,
         },
       });
+      console.log(response.data);
 
       const newMessage = {
         content: inputMessage,
@@ -116,7 +126,7 @@ const SingleChat = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header isAdmin={showAdminFeatures}/>
       <div className="flex flex-grow">
         <div className="w-1/4">
           <LeftComponent />

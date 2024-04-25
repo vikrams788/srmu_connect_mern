@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from '../partials/Header';
 import Footer from '../partials/Footer';
@@ -9,6 +9,8 @@ import { toast } from 'react-toastify';
 
 function AddMultipleProfiles() {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
   const [multipleProfileFormData, setMultipleProfileFormData] = useState({
     userDataFile: null,
@@ -41,9 +43,17 @@ function AddMultipleProfiles() {
     }
   };
 
+  useEffect(() => {
+    if(user.role === 'admin' || user.role === 'teacher') {
+      setShowAdminFeatures(true);
+    } else {
+      setShowAdminFeatures(false);
+    }
+  }, [user.role])
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header isAdmin = {showAdminFeatures}/>
       <div className="container my-auto flex-grow mx-auto mt-4">
         <div className="md:flex md:justify-evenly">
           <div className="md:w-1/3 hidden md:block">

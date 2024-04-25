@@ -31,6 +31,8 @@ const CreatePost = ({post}) => {
   }, [post]);
 
   const userProfile = JSON.parse(localStorage.getItem('profile'));
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
   const navigate = useNavigate();
 
@@ -120,9 +122,17 @@ const CreatePost = ({post}) => {
     }
   };
 
+  useEffect(() => {
+    if(user.role === 'admin' || user.role === 'teacher') {
+      setShowAdminFeatures(true);
+    } else {
+      setShowAdminFeatures(false);
+    }
+  }, [user.role])
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header isAdmin = {showAdminFeatures}/>
       <div className="container mx-auto mt-4 flex-grow">
         <div className="md:flex md:justify-between">
           <div className="md:w-1/6 hidden md:block">

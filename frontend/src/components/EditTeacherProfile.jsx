@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '../partials/Header';
 import Footer from '../partials/Footer';
 import LeftComponent from './LeftComponent';
@@ -15,6 +15,8 @@ const EditTeacherProfile = () => {
     employeeId: '',
     profilePicture: null,
   });
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
   const navigate = useNavigate();
 
@@ -54,9 +56,17 @@ const EditTeacherProfile = () => {
     }
   };
 
+  useEffect(() => {
+    if(user.role === 'admin' || user.role === 'teacher') {
+      setShowAdminFeatures(true);
+    } else {
+      setShowAdminFeatures(false);
+    }
+  }, [user.role])
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header isAdmin = {showAdminFeatures}/>
       <div className="container mx-auto py-8 flex-grow">
         <div className="flex">
           <div className="w-full md:w-1/4">

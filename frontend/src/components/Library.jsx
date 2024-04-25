@@ -11,10 +11,17 @@ const Library = () => {
   const [books, setBooks] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const booksPerPage = 12;
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
   useEffect(() => {
     setBooks(booksData);
-  }, []);
+    if(user.role === 'admin' || user.role === 'teacher') {
+      setShowAdminFeatures(true);
+    } else {
+      setShowAdminFeatures(false);
+    }
+  }, [user.role]);
 
   const pageCount = Math.ceil(books.length / booksPerPage);
 
@@ -26,7 +33,7 @@ const Library = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <Header isAdmin = {showAdminFeatures}/>
 
       <div className="flex flex-col lg:flex-row">
         <div className="w-full lg:w-1/6 mt-16 hidden md:block">
