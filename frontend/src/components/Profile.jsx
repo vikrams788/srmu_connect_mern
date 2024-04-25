@@ -17,7 +17,9 @@ const Profile = () => {
   const [userPosts, setUserPosts] = useState([]);
   const { userId } = useParams();
   const currentUser = JSON.parse(localStorage.getItem('profile'));
+  const currentUserData = JSON.parse(localStorage.getItem('user'));
   const currentUserId = currentUser.createdBy;
+  const [areFriends, setAreFriends] = useState(false);
 
   const navigate = useNavigate();
   //Fetch user's profile info and posts
@@ -51,13 +53,23 @@ const Profile = () => {
         setUserData(profileResponse.data);
         setUserPosts(postsResponse.data);
 
+        if(currentUser?.fullName !== userData?.fullName){
+          if(userId) {
+            setAreFriends(currentUserData?.friends.some(function(friend){
+              return friend.fullName === userData?.fullName;
+            }));
+          } else {
+            setAreFriends(false);
+          }
+        }
+
       } catch (error) {
         console.error('Error fetching user profile data or posts:', error);
       }
     };
 
     fetchUserData();
-  }, [userId]);
+  }, [currentUser?.fullName, currentUserData?.friends, userData?.fullName, userId]);
 
   //Create Post
   const handleCreatePostClick = () => {
@@ -109,6 +121,8 @@ const Profile = () => {
         },
       });
 
+      setAreFriends(false)
+
       toast.success('Successfully removed as friend', {
         position: 'top-right',
         autoClose: 1000,
@@ -148,31 +162,32 @@ const Profile = () => {
                 <div className=' flex justify-between items-center col-span-2 '>
                   <p className="col-span-2"><span className="font-semibold">Bio:</span> {userData.bio}</p>
                   <p className='flex'>
-                    {userData.createdBy !== currentUserId && (<><FaUserPlus
+                    {userData.createdBy !== currentUserId && (<>
+                        { areFriends === false && (<><FaUserPlus
                         className='w-6 h-6 text-gray-700 hover:text-blue-500 m-2'
                         onClick={handleAddFriend}
                         data-tooltip-id="add-friend-tooltip"
-                        data-tooltip-content="Add Friend" /><Tooltip id='add-friend-tooltip' />
-                        <FaUserMinus 
-                    className=' w-6 h-6 hover:text-blue-500 m-2 text-gray-700' 
-                    onClick={handleRemoveFriend}
-                    data-tooltip-id="unfriend-tooltip"
-                    data-tooltip-content="Unfriend"
-                    />
-                    <Tooltip id='unfriend-tooltip' />
-                    <FaRegMessage 
-                    className=' w-6 h-6 hover:text-blue-500 m-2 text-gray-700'
-                    data-tooltip-id="send-message-tooltip"
-                    data-tooltip-content="Send Message"
-                    onClick={handleChat}
-                    />
-                    <Tooltip id='send-message-tooltip' />
-                        </>)}
-                    { userData.createdBy === currentUserId && (<><MdOutlineModeEditOutline
-                      className=' w-6 h-6 hover:text-blue-500 text-gray-700 m-2'
-                      onClick={() => { navigate('/edit-profile'); } }
-                      data-tooltip-id="edit-profile-tooltip"
-                      data-tooltip-content="Edit Profile" /><Tooltip id='edit-profile-tooltip' /></>)}
+                        data-tooltip-content="Add Friend" /><Tooltip id='add-friend-tooltip' /></>)}
+                        { areFriends === true && (<><FaUserMinus
+                        className=' w-6 h-6 hover:text-blue-500 m-2 text-gray-700'
+                        onClick={handleRemoveFriend}
+                        data-tooltip-id="unfriend-tooltip"
+                        data-tooltip-content="Unfriend" /><Tooltip id='unfriend-tooltip' />
+                        <FaRegMessage 
+                        className=' w-6 h-6 hover:text-blue-500 m-2 text-gray-700'
+                        data-tooltip-id="send-message-tooltip"
+                        data-tooltip-content="Send Message"
+                        onClick={handleChat}
+                        />
+                        <Tooltip id='send-message-tooltip' /></>)}
+                            </>)}
+                        { userData.createdBy === currentUserId && (<><MdOutlineModeEditOutline
+                          className=' w-6 h-6 hover:text-blue-500 text-gray-700 m-2'
+                          onClick={() => { navigate('/edit-profile'); } }
+                          data-tooltip-id="edit-profile-tooltip"
+                          data-tooltip-content="Edit Profile" />
+                          <Tooltip id='edit-profile-tooltip' />
+                      </>)}
                   </p>
                 </div>
                 <p><span className="font-semibold">Email:</span> {userData.email}</p>

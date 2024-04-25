@@ -1,5 +1,6 @@
 const FriendRequest = require('../models/FriendRequest');
 const User = require('../models/User');
+const mongoose = require('mongoose');
 
 exports.sendFriendRequest = async (req, res) => {
     const { senderId, recipientId, fullName, profilePicture } = req.body;
@@ -41,34 +42,42 @@ exports.acceptFriendRequest = async (req, res) => {
     const requestId = req.params.requestId;
 
     try {
-        const request = await FriendRequest.findOne({sender: requestId});
+        const request = await FriendRequest.findOne({ sender: requestId });
 
         if (!request || request.status !== 'pending') {
-            return res.status(404).json({ message: 'Friend request not found' });
+            return res.status(404).json({ message: 'Friend request not found or already accepted' });
         }
 
-        await User.findByIdAndUpdate(request.recipient, {
-            $push: {
-                friends: {
-                    userId: request.sender,
-                    fullName: req.body.fullName,
-                    profilePicture: req.body.profilePicture
+        await User.findByIdAndUpdate(
+            request.recipient,
+            {
+                $push: {
+                    friends: {
+                        userId: request.sender,
+                        fullName: req.body.fullName,
+                        profilePicture: req.body.profilePicture
+                    }
+                },
+                $pull: { pendingRequests: { userId: request.sender } }
+            },
+            { new: true }
+        );
+
+        await User.findByIdAndUpdate(
+            request.sender,
+            {
+                $push: {
+                    friends: {
+                        userId: request.recipient,
+                        fullName: req.body.currentUserFullName,
+                        profilePicture: req.body.currentUserProfilePicture
+                    }
                 }
             },
-            $pull: { pendingRequests: { userId: request.sender } }
-        });
+            { new: true }
+        );
 
-        await User.findByIdAndUpdate(request.sender, {
-            $push: {
-                friends: {
-                    userId: request.recipient,
-                    fullName: req.body.currentUserFullName,
-                    profilePicture: req.body.currentUserProfilePicture
-                }
-            }
-        });
-
-        await FriendRequest.findByIdAndDelete(requestId);
+        await FriendRequest.findOneAndDelete({sender: requestId});
 
         res.status(200).json({ message: 'Friend request accepted successfully' });
     } catch (error) {
@@ -79,9 +88,10 @@ exports.acceptFriendRequest = async (req, res) => {
 
 exports.deleteFriendRequest = async (req, res) => {
     const requestId = req.params.requestId;
+    const objectId = mongoose.Types.ObjectId(requestId)
 
     try {
-        const request = await FriendRequest.findOne({sender: requestId});
+        const request = await FriendRequest.findOne({sender: objectId});
 
         if (!request) {
             return res.status(404).json({ message: 'Friend request not found' });

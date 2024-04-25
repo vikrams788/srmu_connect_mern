@@ -9,6 +9,8 @@ import EditPost from './components/EditPost';
 import FriendRequests from './components/FriendRequests';
 import SingleChat from './components/SingleChat';
 import Library from './components/Library';
+import SignupMultipleUsers from './components/SignupMultipleUsers';
+import AddMultipleProfiles from './components/AddMultipleProfiles';
 
 function App() {
 
@@ -32,6 +34,8 @@ function App() {
         <Route path='/friend-requests' element={isLoggedIn ? <FriendRequests /> : <Login />}/>
         <Route path='/chat' element={isLoggedIn ? <SingleChat /> : <Login />}/>
         <Route path='/e-library' element={isLoggedIn ? <Library /> : <Login />}/>
+        <Route path='/add-users' element={isLoggedIn ? <SignupMultipleUsers /> : <Login />}/>
+        <Route path='/add-profiles' element={isLoggedIn ? <AddMultipleProfiles /> : <Login />}/>
       </Routes>
     </BrowserRouter>
   )

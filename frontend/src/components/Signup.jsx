@@ -12,23 +12,13 @@ const Signup = () => {
     password: '',
     confirmPassword: '',
   });
-  const userData = JSON.parse(localStorage.getItem('user'));
   
-  const [multipleUsersFormData, setMultipleUsersFormData] = useState({
-    userDataFile: null,
-  });
   const [error, setError] = useState(null);
-  const [isSingleUser, setIsSingleUser] = useState(true);
   const navigate = useNavigate();
 
   const handleSingleUserChange = (e) => {
     const { name, value } = e.target;
     setSingleUserFormData({ ...singleUserFormData, [name]: value });
-  };
-  
-  const handleMultipleUsersFileChange = (e) => {
-    const file = e.target.files[0];
-    setMultipleUsersFormData({ ...multipleUsersFormData, userDataFile: file });
   };
 
   const handleSubmitSingleUser = async (e) => {
@@ -51,46 +41,16 @@ const Signup = () => {
           draggable: true,
         });
 
+        const user = response.data.newUser;
+
+        localStorage.setItem('user', JSON.stringify(user))
+
         navigate('/edit-profile');
 
         console.log(response.data);
     } catch (error) {
       console.error('Error in signup:', error);
       setError('Failed to signup. Please try again later.');
-    }
-  };
-
-  const handleSubmitMultipleUsers = async (e) => {
-    e.preventDefault();
-    try {
-      const data = new FormData();
-      data.append('userDataFile', multipleUsersFormData.userDataFile);
-  
-      console.log('FormData:', multipleUsersFormData.userDataFile);
-  
-      const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/bulk-user-upload', data, {
-        withCredentials: true,
-        headers: {
-          'content-type': 'multipart/form-data',
-          'Access-Control-Allow-Credentials': true,
-        },
-      });
-  
-      toast.success('Users created', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-      });
-  
-      navigate('/');
-  
-      console.log(response.data);
-    } catch (error) {
-      console.error('Error in bulk user upload:', error);
-      setError('Failed to upload users. Please try again later.');
     }
   };
 
@@ -105,25 +65,6 @@ const Signup = () => {
             </div>
             <h2 className="text-2xl mb-4 font-semibold text-center">Signup</h2>
             {error && <div className="text-red-500 text-sm mb-4 mx-auto">{error}</div>}
-            {userData.role === 'admin' || userData.role === 'teacher' ? (
-              <div className="mb-4 flex justify-center items-center">
-                <button
-                  className={`py-2 px-4 rounded mr-4 focus:outline-none ${isSingleUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-                  onClick={() => setIsSingleUser(true)}
-                >
-                  Single User
-                </button>
-                <button
-                  className={`py-2 px-4 rounded focus:outline-none ${!isSingleUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-                  onClick={() => setIsSingleUser(false)}
-                >
-                  Multiple Users
-                </button>
-              </div>
-            ) : (
-              <p className="text-red-500 text-sm mb-4 mx-auto">You do not have permission to upload multiple users.</p>
-            )}
-            {isSingleUser ? (
               <form onSubmit={handleSubmitSingleUser} id="signupFormSingleUser">
                 <div className="mb-4">
                   <label htmlFor="email" className="block text-gray-700 text-sm font-semibold mb-2">Email</label>
@@ -139,16 +80,6 @@ const Signup = () => {
                 </div>
                 <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">Signup</button>
               </form>
-            ) : (
-              <form onSubmit={handleSubmitMultipleUsers} id="signupFormMultipleUsers" encType="multipart/form-data">
-                {/* Multiple users upload form */}
-                <div className="mb-4">
-                  <label htmlFor="userDataFile" className="block text-gray-700 text-sm font-semibold mb-2">Upload User Data (Excel file)</label>
-                  <input type="file" className="form-input" name="userDataFile" id='userDataFile' onChange={handleMultipleUsersFileChange} required />
-                </div>
-                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">Upload Users</button>
-              </form>
-            )}
             <p className="mt-3 text-center text-sm">Already have an account? <a href="/login" className="text-blue-500 hover:text-blue-700">Login Here!</a></p>
           </div>
         </div>

@@ -16,6 +16,6 @@ router.get('/profiles', authMiddleware, profileControllers.getProfilesBySenderId
 
 router.delete('/profile', authMiddleware, profileControllers.deleteUserProfile);
 
-router.put('/profile', authMiddleware, profileControllers.editUserProfile);
+router.put('/profile', authMiddleware, upload.single("profilePicture"), profileControllers.editUserProfile);
 
 module.exports = router;

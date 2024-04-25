@@ -10,7 +10,9 @@ import Post from './Post';
 function Home() {
   const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
-  const [userData, setUserData] = useState()
+  const [userData, setUserData] = useState();
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -25,6 +27,11 @@ function Home() {
         setUserData(response.data)
         const userProfile = response.data;
         localStorage.setItem('profile', JSON.stringify(userProfile));
+        if(user.role === 'admin' || user.role === 'teacher') {
+          setShowAdminFeatures(true);
+        } else {
+          setShowAdminFeatures(false);
+        }
       } catch (error) {
         console.error('Error fetching user profile:', error);
       }
@@ -62,11 +69,11 @@ function Home() {
 
     fetchUserProfile();
     fetchPosts();
-  }, []);
+  }, [user.role]);
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header isAdmin = {showAdminFeatures}/>
       <div className="container mx-auto py-8 flex-grow">
         <div className="flex flex-wrap">
           <div className="w-full md:w-1/6 overflow-y-auto h-screen hidden md:block custom-scrollbar">

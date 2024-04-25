@@ -57,13 +57,16 @@ exports.signup = async (req, res) => {
         const newUser = new User({ email, password: hashedPassword });
         await newUser.save();
 
-        const payload = {
-            userId: newUser._id,
-            email: newUser.email,
+        if(req.user){
+            var token = jwt.sign({ userId: req.user.userId }, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
+            var token2 = jwt.sign({ userId: req.user.userId }, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
+        }
+        else {
+            token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
+            token2 = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
         }
 
-        const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
-        const token2 = jwt.sign(payload, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
+        
 
         res.cookie('token', token, { 
             httpOnly: true,
@@ -72,7 +75,7 @@ exports.signup = async (req, res) => {
             expires: new Date(Date.now() + 10800000),
         });
     
-        res.status(201).json({ message: 'Signup successful', token2 });
+        res.status(201).json({ message: 'Signup successful', token2, newUser });
     } catch (error) {
         console.error('Error in signup:', error);
         res.status(500).json({ message: 'Internal server error' });

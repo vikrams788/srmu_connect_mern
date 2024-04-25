@@ -35,6 +35,7 @@ exports.createUserProfile = async (req, res) => {
         res.status(201).json({ message: 'Profile Saved' })
 
     } catch (error) {
+        console.log(error.message);
         res.status(500).json({ message: 'An error occurred', error: error.message });
     }
 };
@@ -147,10 +148,25 @@ exports.getAnotherUsersProfile = async (req, res) => {
 
 exports.getAllUsersProfile = async (req, res) => {
     try {
-        const userProfiles = await Profile.find();
-        if (!userProfiles) {
-            return res.status(404).json({ message: 'User profiles not found' });
+        const userId = req.user.userId;
+
+        const currentUser = await User.findById(userId);
+
+        if (!currentUser) {
+            return res.status(404).json({ message: 'User profile not found' });
         }
+
+        const friendFullNames = currentUser.friends.map(function(friend){
+            return friend.fullName
+        });
+
+        const userProfiles = await Profile.find({
+            $and: [
+                { createdBy: { $ne: userId } }, // Exclude current user's profile
+                { fullName: { $nin: friendFullNames } } // Exclude friend profiles
+            ]
+        });
+
         res.status(200).json(userProfiles);
     } catch (error) {
         console.error('Error getting user profiles:', error);
