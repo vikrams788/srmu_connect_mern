@@ -17,6 +17,14 @@ const Signup = () => {
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
+
+    const validEmailPattern = /@srmu\.ac\.in$/;
+    const isEmailValid = validEmailPattern.test(email);
+
+    if (!isEmailValid) {
+      setError('Please enter a valid SRMU email ID');
+      return;
+    }
     try {
       const response = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/send-otp`, { email }, {
         withCredentials: true,

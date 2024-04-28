@@ -109,9 +109,13 @@ exports.verifyOTP = async (req, res) => {
             });
         }
 
+        const isStudentEmail = user.email.endsWith('.stdnt@srmu.ac.in');
+        const role = isStudentEmail ? 'student' : 'teacher';
+
         const hashedPassword = await bcrypt.hash(password, 10);
         user.password = hashedPassword;
         user.otp = null;
+        user.role = role;
         await user.save();
 
         const payload = {
