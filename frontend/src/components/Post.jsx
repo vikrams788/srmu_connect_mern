@@ -20,31 +20,47 @@ const Post = ({ post }) => {
     profilePicture: ''
   });
   const userProfile = JSON.parse(localStorage.getItem('profile'));
+  const user = JSON.parse(localStorage.getItem('user'));
   const [showDeletePost, setShowDeletePost] = useState(false);
 
   //Fetch the profile of the creator
   useEffect(() => {
     const fetchCreatorProfile = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/profile/${post.createdBy}`, {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Credentials': true,
-          },
-        });
-        setCreatorProfile(response.data);
-        const currentUserId = userProfile.createdBy;
-        setLiked(post.likes.some(function(like){
-          return like.likedBy == currentUserId
-        }));
+        if(user.role !== 'teacher') {
+          const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/profile/${post.createdBy}`, {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Credentials': true,
+            },
+          });
+          setCreatorProfile(response.data);
+          const currentUserId = userProfile.createdBy;
+          setLiked(post.likes.some(function(like){
+            return like.likedBy == currentUserId
+          }));
+        } else {
+          const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/teacher-profile/${post.createdBy}`, {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Credentials': true,
+            },
+          });
+          setCreatorProfile(response.data);
+          const currentUserId = userProfile.createdBy;
+          setLiked(post.likes.some(function(like){
+            return like.likedBy == currentUserId
+          }));
+        }
       } catch (error) {
         console.error('Error fetching creator profile:', error);
       }
     };
 
     fetchCreatorProfile();
-  }, [post.createdBy, post.likes, userProfile.createdBy]);
+  }, [post.createdBy, post.likes, user.role, userProfile.createdBy]);
 
   // useEffect(() => {
   //   // Check if the current user has liked this post

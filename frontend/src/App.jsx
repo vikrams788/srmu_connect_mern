@@ -11,11 +11,13 @@ import SingleChat from './components/SingleChat';
 import Library from './components/Library';
 import SignupMultipleUsers from './components/SignupMultipleUsers';
 import AddMultipleProfiles from './components/AddMultipleProfiles';
+import EditTeacherProfile from './components/EditTeacherProfile';
+import TeacherProfile from './components/TeacherProfile';
 
 function App() {
 
   let isLoggedIn = localStorage.getItem('token');
-  isLoggedIn = true;
+  // isLoggedIn = true;
   
   return (
     <BrowserRouter >
@@ -36,6 +38,8 @@ function App() {
         <Route path='/e-library' element={isLoggedIn ? <Library /> : <Login />}/>
         <Route path='/add-users' element={isLoggedIn ? <SignupMultipleUsers /> : <Login />}/>
         <Route path='/add-profiles' element={isLoggedIn ? <AddMultipleProfiles /> : <Login />}/>
+        <Route path='/edit-teacher-profile' element={isLoggedIn ? <EditTeacherProfile /> : <Login />}/>
+        <Route path='/teacher-profile' element={isLoggedIn ? <TeacherProfile /> : <Login />}/>
       </Routes>
     </BrowserRouter>
   )

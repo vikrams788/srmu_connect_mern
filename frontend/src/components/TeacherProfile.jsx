@@ -27,11 +27,11 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        var profileEndpoint = '/api/profile';
+        var profileEndpoint = '/api/teacher-profile';
         var postsEndpoint = '/api/my-posts';
 
         if (userId) {
-          profileEndpoint = `/api/profile/${userId}`;
+          profileEndpoint = `/api/teacher-profile/${userId}`;
           postsEndpoint = `/api/posts/user/${userId}`;
         }
 
@@ -203,10 +203,9 @@ const Profile = () => {
                       </>)}
                   </p>
                 </div>
-                <p><span className="font-semibold">Email:</span> {userData.email}</p>
-                <p><span className="font-semibold">Course:</span> {userData.course}</p>
-                <p><span className="font-semibold">Roll Number:</span> {userData.rollNo}</p>
-                <p><span className="font-semibold">Semester:</span> {userData.semester}</p>
+                <p><span className="font-semibold">Department:</span> {userData.department}</p>
+                <p><span className="font-semibold">Employee ID:</span> {userData.employeeId}</p>
+                <p><span className="font-semibold">Faculty Room:</span> {userData.facultyRoom}</p>
               </div>
             )}
             <h2 className="text-2xl font-bold mb-4">Create Post</h2>

@@ -8,11 +8,11 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
     },
     role: {
         type: String,
-        enum: ['admin', 'student', 'teacher'], 
+        enum: ['admin', 'student', 'teacher'],
+        default: 'student'
     },
     profile: {
         type: mongoose.Schema.Types.ObjectId,
@@ -24,6 +24,9 @@ const userSchema = new mongoose.Schema({
     fullName: {
         type: String
 
+    },
+    otp: {
+        type: String
     },
     pendingRequests: [
         {

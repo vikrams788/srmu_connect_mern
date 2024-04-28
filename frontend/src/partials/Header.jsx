@@ -65,19 +65,34 @@ function Header({isAdmin}) {
 
   const handleSearch = async (query) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/search?query=${query}`, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Credentials': true,
-        },
-      });
-      setSearchResults(response.data);
-      setSearchDropdown(true);
+        const [userProfilesResponse, teacherProfilesResponse] = await Promise.all([
+            axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/search?query=${query}`, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Credentials': true,
+                },
+            }),
+            axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/search-teacher-profiles?query=${query}`, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Credentials': true,
+                },
+            })
+        ]);
+
+        const userProfiles = userProfilesResponse.data;
+        const teacherProfiles = teacherProfilesResponse.data;
+
+        const mergedProfiles = [...userProfiles, ...teacherProfiles];
+
+        setSearchResults(mergedProfiles);
+        setSearchDropdown(true);
     } catch (error) {
-      console.error('Error searching users:', error);
-      setSearchResults([]);
-      setSearchDropdown(false);
+        console.error('Error searching users:', error);
+        setSearchResults([]);
+        setSearchDropdown(false);
     }
   };
 

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 const authMiddleware = async (req, res, next) => {
   try {
@@ -10,10 +11,10 @@ const authMiddleware = async (req, res, next) => {
 
     const decodedToken = jwt.verify(token, process.env.JWT_SECRETKEY);
 
-    const userId = decodedToken.userId;
-
     req.user = {
-      userId: userId,
+      userId: decodedToken.userId,
+      email: decodedToken.email,
+      role: decodedToken.role
     };
 
     next();

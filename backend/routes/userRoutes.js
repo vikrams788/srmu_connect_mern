@@ -8,7 +8,7 @@ router.get('/pending-requests/:userId', authMiddleware, userControllers.getPendi
 router.get('/user', authMiddleware, userControllers.getUserById);
 router.get('/posts/user/friends', authMiddleware, userControllers.getFriendsPosts);
 
-router.post('/signup', userControllers.signup);
+router.post('/send-otp', userControllers.sendOTP);
 
 router.post('/bulk-user-upload', authMiddleware, excelUpload.single('userDataFile'), userControllers.uploadExcelFile);
 
@@ -16,6 +16,8 @@ router.post('/login', userControllers.login);
 
 router.post('/logout', userControllers.logout);
 
-router.post('/remove-friend', authMiddleware, userControllers.removeFriend)
+router.post('/remove-friend', authMiddleware, userControllers.removeFriend);
+
+router.post('/signup', authMiddleware, userControllers.verifyOTP);
 
 module.exports = router;

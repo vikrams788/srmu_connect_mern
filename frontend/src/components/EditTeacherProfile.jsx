@@ -17,17 +17,47 @@ const EditTeacherProfile = () => {
   });
   const user = JSON.parse(localStorage.getItem('user'));
   const [showAdminFeatures, setShowAdminFeatures] = useState(false);
+  const [fetchedProfile, setFetchedProfile] = useState();
 
   const navigate = useNavigate();
 
-  const handleSingleUserChange = (e) => {
-    const { name, value } = e.target;
-    setSingleUserFormData({ ...singleUserFormData, [name]: value });
-  };
+  useEffect(() => {
+    const fetchTeacherProfile = async () => {
+      const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/teacher-profile`, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Credentials': true
+        }
+      });
+      setSingleUserFormData(response.data);
+      setFetchedProfile(response.data);
+    }
+    
+    if(user.role === 'admin' || user.role === 'teacher') {
+      setShowAdminFeatures(true);
+    } else {
+      setShowAdminFeatures(false);
+    }
 
-  const handleSingleUserFileChange = (e) => {
-    const file = e.target.files[0];
-    setSingleUserFormData({ ...singleUserFormData, profilePicture: file });
+    fetchTeacherProfile();
+  }, [user.role])
+
+  const handleSingleUserChange = (event) => {
+    const { name, value, files } = event.target;
+  
+    if (files) {
+      const file = files[0];
+      setSingleUserFormData((prevState) => ({
+        ...prevState,
+        [name]: file,
+      }));
+    } else {
+      setSingleUserFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmitSingleUser = async (e) => {
@@ -41,28 +71,32 @@ const EditTeacherProfile = () => {
       formData.append('employeeId', singleUserFormData.employeeId);
       formData.append('profilePicture', singleUserFormData.profilePicture);
 
-      const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/create-teacher-profile', formData, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Credentials': true,
-        },
-      });
+      if(!fetchedProfile) {
+        const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/create-teacher-profile', formData, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Access-Control-Allow-Credentials': true,
+          },
+        });
 
-      console.log('Single user profile created:', response.data);
+        console.log('Single user profile created:', response.data);
+      } else {
+        const response = await axios.put(import.meta.env.VITE_REACT_APP_API_URL + '/api/edit-teacher-profile', formData, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Access-Control-Allow-Credentials': true,
+          },
+        });
+
+        console.log('Single user profile created:', response.data);
+      }
       navigate('/');
     } catch (error) {
       console.error('Error creating single user profile:', error);
     }
   };
-
-  useEffect(() => {
-    if(user.role === 'admin' || user.role === 'teacher') {
-      setShowAdminFeatures(true);
-    } else {
-      setShowAdminFeatures(false);
-    }
-  }, [user.role])
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -78,31 +112,27 @@ const EditTeacherProfile = () => {
             <form onSubmit={handleSubmitSingleUser} encType="multipart/form-data">
               <div className="mb-4">
                 <label htmlFor="fullName" className="block text-sm font-semibold mb-2">Full Name</label>
-                <input type="text" name="fullName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" onChange={handleSingleUserChange} required />
+                <input type="text" name="fullName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id='fullName' value={singleUserFormData.fullName} onChange={handleSingleUserChange} required />
               </div>
               <div className="mb-4">
-                <label htmlFor="fullName" className="block text-sm font-semibold mb-2">Full Name</label>
-                <input type="text" name="fullName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" onChange={handleSingleUserChange} required />
+                <label htmlFor="bio" className="block text-sm font-semibold mb-2">Bio</label>
+                <textarea className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="bio" rows="3" name="bio" placeholder="Tell something about yourself" value={singleUserFormData.bio} onChange={handleSingleUserChange}></textarea>
               </div>
               <div className="mb-4">
-                <label htmlFor="fullName" className="block text-sm font-semibold mb-2">Full Name</label>
-                <input type="text" name="fullName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" onChange={handleSingleUserChange} required />
+                <label htmlFor="facultyRoom" className="block text-sm font-semibold mb-2">Faculty Room</label>
+                <input type="text" name="facultyRoom" id='facultyRoom' className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value={singleUserFormData.facultyRoom} onChange={handleSingleUserChange} required />
               </div>
               <div className="mb-4">
-                <label htmlFor="fullName" className="block text-sm font-semibold mb-2">Full Name</label>
-                <input type="text" name="fullName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" onChange={handleSingleUserChange} required />
+                <label htmlFor="department" className="block text-sm font-semibold mb-2">Department</label>
+                <input type="text" name="department" id='department' className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value={singleUserFormData.department} onChange={handleSingleUserChange} required />
               </div>
               <div className="mb-4">
-                <label htmlFor="fullName" className="block text-sm font-semibold mb-2">Full Name</label>
-                <input type="text" name="fullName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" onChange={handleSingleUserChange} required />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="fullName" className="block text-sm font-semibold mb-2">Full Name</label>
-                <input type="text" name="fullName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" onChange={handleSingleUserChange} required />
+                <label htmlFor="employeeId" className="block text-sm font-semibold mb-2">Employee ID</label>
+                <input type="text" name="employeeId" id='employeeId' className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value={singleUserFormData.employeeId} onChange={handleSingleUserChange} required />
               </div>
               <div className="mb-4">
                 <label htmlFor="profilePicture" className="block text-sm font-semibold mb-2">Profile Picture</label>
-                <input type="file" name="profilePicture" onChange={handleSingleUserFileChange} required />
+                <input type="file" name="profilePicture" id='profilePicture' onChange={handleSingleUserChange} />
               </div>
               <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
             </form>

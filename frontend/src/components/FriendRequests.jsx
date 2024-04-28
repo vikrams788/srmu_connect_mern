@@ -35,19 +35,33 @@ const FriendRequests = () => {
 
         const fetchAllProfiles = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/all-profiles`, {
-                    withCredentials: true,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Credentials': true,
-                    },
-                });
-
-                setProfiles(response.data);
+                const [userProfilesResponse, teacherProfilesResponse] = await Promise.all([
+                    axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/all-profiles`, {
+                        withCredentials: true,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Credentials': true,
+                        },
+                    }),
+                    axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/non-friend-profiles`, {
+                        withCredentials: true,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Credentials': true,
+                        },
+                    })
+                ]);
+        
+                const userProfiles = userProfilesResponse.data;
+                const teacherProfiles = teacherProfilesResponse.data;
+        
+                const mergedProfiles = [...userProfiles, ...teacherProfiles];
+        
+                setProfiles(mergedProfiles);
             } catch (error) {
                 console.error('Error fetching profiles:', error);
             }
-        };
+        };        
 
         fetchPendingRequests();
         fetchAllProfiles();

@@ -98,7 +98,7 @@ const CreatePost = ({post}) => {
 
         console.log('Post created successfully', response.data);
       }
-      navigate('/profile');
+      navigate('/');
     } catch (error) {
       console.error('Error creating post:', error.message);
     }
@@ -117,7 +117,12 @@ const CreatePost = ({post}) => {
           setFormData({ ...formData, [name]: files[0] });
         }
       } else {
-        setFormData({ ...formData, [name]: value });
+        if (name === 'embeddedVideo') {
+          const updatedEmbeddedVideo = value.replace('/watch?v=', '/embed/');
+          setFormData({ ...formData, [name]: updatedEmbeddedVideo });
+        } else {
+          setFormData({ ...formData, [name]: value });
+        }
       }
     }
   };
@@ -194,7 +199,7 @@ const CreatePost = ({post}) => {
                 {formData.postType === 'embed-option' && (
                   <div className="mb-4">
                     <label htmlFor="embeddedVideo" className="block text-gray-700 text-sm font-semibold mb-2">Embedded Video</label>
-                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" id="embeddedVideo" name="embeddedVideo" placeholder="Enter video URL (replace '/watch?v=' with '/embed/')" value={formData.embeddedVideo} onChange={handleChange} />
+                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" id="embeddedVideo" name="embeddedVideo" placeholder="Enter youtube video URL" value={formData.embeddedVideo} onChange={handleChange} />
                   </div>
                 )}
                 <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto">Create Post</button>

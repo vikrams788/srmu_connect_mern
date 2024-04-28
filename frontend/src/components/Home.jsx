@@ -17,17 +17,28 @@ function Home() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Credentials': true,
-          },
-        });
-        setUserData(response.data)
-        const userProfile = response.data;
-        localStorage.setItem('profile', JSON.stringify(userProfile));
-        if(user.role === 'admin' || user.role === 'teacher') {
+        let response;
+        if (user.role !== 'teacher') {
+          response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Credentials': true,
+            },
+          });
+        } else {
+          response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/teacher-profile', {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Credentials': true,
+            },
+          });
+        }
+
+        setUserData(response.data);
+
+        if (user.role === 'admin' || user.role === 'teacher') {
           setShowAdminFeatures(true);
         } else {
           setShowAdminFeatures(false);
@@ -73,21 +84,22 @@ function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header isAdmin = {showAdminFeatures}/>
+      <Header isAdmin={showAdminFeatures} />
       <div className="container mx-auto py-8 flex-grow">
         <div className="flex flex-wrap">
           <div className="w-full md:w-1/6 overflow-y-auto h-screen hidden md:block custom-scrollbar">
             <LeftComponent />
           </div>
           <div className="w-full md:w-2/3 px-4 overflow-y-auto h-screen custom-scrollbar">
-            {userData && (
+            {!userData ? (
+              <div className="bg-white shadow-md p-6 rounded-lg mb-6">
+                <p>No profile found, <a href="/edit-profile" className="text-blue-500 hover:text-blue-700">Create one now!</a></p>
+              </div>
+            )
+            : (
               <div className="bg-white shadow-md p-6 rounded-lg mb-6">
                 <div className="text-center">
-                  <img
-                    src={userData.profilePicture}
-                    alt="Profile"
-                    className="w-40 h-40 rounded-full mx-auto mb-4"
-                  />
+                  <img src={userData.profilePicture} alt="Profile" className="w-40 h-40 rounded-full mx-auto mb-4" />
                   <h1 className="text-2xl font-bold mb-4">{userData.fullName}</h1>
                 </div>
               </div>
@@ -97,16 +109,21 @@ function Home() {
               type="text"
               placeholder="Say something..."
               className="border border-gray-300 w-full rounded py-2 px-4 focus:outline-none focus:border-blue-500 cursor-pointer hover:border-blue-500"
-              onClick={() => {navigate('/create-post')}}
+              onClick={() => {
+                navigate('/create-post');
+              }}
             />
-            <h1 className="text-2xl py-3 font-bold mb-4">
-              Posts
-            </h1>
-            <div>
+            <h1 className="text-2xl py-3 font-bold mb-4">Posts</h1>
+            {!posts.length ? (
+              <div className="bg-white shadow-md p-6 rounded-lg mb-6">
+                <p>No posts found.</p>
+              </div>
+            ) : 
+            (<div>
               {posts.map((post) => (
                 <Post key={post._id} post={post} />
               ))}
-            </div>
+            </div>)}
           </div>
           <div className="w-full md:w-1/6 hidden md:block custom-scrollbar">
             <RightComponent />

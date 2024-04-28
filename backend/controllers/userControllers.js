@@ -6,6 +6,8 @@ const Post = require('../models/Post');
 const exceljs = require('exceljs');
 const fs = require('fs');
 const axios = require('axios');
+const otpGenerator = require('otp-generator');
+const nodemailer = require('nodemailer');
 
 exports.login = async (req, res) => {
     try {
@@ -43,33 +45,83 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.signup = async (req, res) => {
+exports.sendOTP = async (req, res) => {
     try {
-        const { email, password } = req.body;
-    
+        const { email } = req.body;
+
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
-    
-        const hashedPassword = await bcrypt.hash(password, 10);
 
-        const isStudentEmail = email.endsWith('.stdnt@srmu.ac.in');
-        const role = isStudentEmail ? 'student' : 'teacher';
-    
-        const newUser = new User({ email, password: hashedPassword, role });
+        const generatedOTP = otpGenerator.generate(6, { upperCase: false, specialChars: false, alphabets: false });
+
+        const newUser = new User({ email, otp: generatedOTP });
         await newUser.save();
 
-        if(req.user){
-            var token = jwt.sign({ userId: req.user.userId }, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
-            var token2 = jwt.sign({ userId: req.user.userId }, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
-        }
-        else {
-            token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
-            token2 = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
+        let transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            requireTLS: true,
+            auth: {
+              user: process.env.MY_EMAIL,
+              pass: process.env.PASSWORD,
+            },
+        });
+
+        let mailOptions = {
+            from: process.env.MY_EMAIL,
+            to: email,
+            subject: 'Your Login OTP',
+            text: `Your OTP is: ${generatedOTP}`,
+        };
+
+        transporter.sendMail(mailOptions, async (error, info) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).json({
+                message: 'Failed to send OTP via email',
+                });
+            } else {
+                console.log('Email sent: ' + info.response);
+                return res.status(200).json({
+                    message: 'OTP sent successfully',
+                    userId: newUser._id,
+                });
+            }
+        });
+    } catch (error) {
+        console.error('Error sending OTP:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.verifyOTP = async (req, res) => {
+    try {
+        const { otp, password } = req.body;
+
+        const user = await User.findOne({ otp });
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found or invalid OTP',
+            });
         }
 
-        
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+        user.otp = null;
+        await user.save();
+
+        const payload = {
+            userId: user._id,
+            email: user.email,
+            role: user.role
+        }
+
+        const token = jwt.sign(payload, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
+        const token2 = jwt.sign(payload, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
 
         res.cookie('token', token, { 
             httpOnly: true,
@@ -77,11 +129,15 @@ exports.signup = async (req, res) => {
             sameSite: 'None',
             expires: new Date(Date.now() + 10800000),
         });
-    
-        res.status(201).json({ message: 'Signup successful', token2, newUser });
+
+        return res.status(200).json({
+            message: 'User created successfully',
+            user,
+            token2
+        });
     } catch (error) {
-        console.error('Error in signup:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        console.error('Error verifying OTP:', error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 };
 
