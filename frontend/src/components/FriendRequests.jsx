@@ -14,6 +14,7 @@ const FriendRequests = () => {
     const currentUser = JSON.parse(localStorage.getItem('profile'));
     const currentUserId = currentUser.createdBy;
     const user = JSON.parse(localStorage.getItem('user'));
+    const role = user.role;
     const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
     useEffect(() => {
@@ -79,7 +80,8 @@ const FriendRequests = () => {
                 senderId,
                 recipientId,
                 fullName: currentUser.fullName,
-                profilePicture: currentUser.profilePicture
+                profilePicture: currentUser.profilePicture,
+                role: role
             }, {
                 withCredentials: true,
                 headers: {

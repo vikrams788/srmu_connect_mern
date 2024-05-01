@@ -37,6 +37,7 @@ function Home() {
         }
 
         setUserData(response.data);
+        localStorage.setItem('profile', JSON.stringify(response.data))
 
         if (user.role === 'admin' || user.role === 'teacher') {
           setShowAdminFeatures(true);

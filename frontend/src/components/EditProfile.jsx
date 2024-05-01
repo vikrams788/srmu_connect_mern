@@ -4,11 +4,10 @@ import Header from '../partials/Header';
 import Footer from '../partials/Footer';
 import LeftComponent from './LeftComponent';
 import RightComponent from './RightComponent';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useNavigate, useParams } from 'react-router-dom'
 
 const EditProfileForm = () => {
-  const navigate = useNavigate();
 
   const [singleProfileFormData, setSingleProfileFormData] = useState({
     fullName: '',
@@ -19,38 +18,67 @@ const EditProfileForm = () => {
     semester: '',
     profilePicture: null,
   });
+  const { userId } = useParams();
   const [profileData, setProfileData] = useState(null);
   const user = JSON.parse(localStorage.getItem('user'));
   const [showAdminFeatures, setShowAdminFeatures] = useState(false);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Credentials': true,
-          },
-        });
+        if(!userId) {
+          const response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Credentials': true,
+            },
+          });
 
-        setProfileData(response.data);
-        if(response){
-          setSingleProfileFormData(response.data);
-        }
-        if(user.role === 'admin' || user.role === 'teacher') {
-          setShowAdminFeatures(true);
+          setProfileData(response.data);
+          if(response){
+            setSingleProfileFormData(response.data);
+          }
+          if(user.role === 'admin' || user.role === 'teacher') {
+            setShowAdminFeatures(true);
+          } else {
+            setShowAdminFeatures(false);
+          }
         } else {
-          setShowAdminFeatures(false);
+          const response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + `/api/profile/${userId}`, {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Credentials': true,
+            },
+          });
+
+          setProfileData(response.data);
+          if(response){
+            setSingleProfileFormData(response.data);
+          }
+          if(user.role === 'admin' || user.role === 'teacher') {
+            setShowAdminFeatures(true);
+          } else {
+            setShowAdminFeatures(false);
+          }
         }
       } catch (error) {
         console.error('Error fetching profile data:', error.message);
-        toast.error('Failed to fetch profile data. Please try again.');
+        toast.error('Failed to fetch profile data. Please try again.', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+        });
       }
     };
 
     fetchProfileData();
-  }, [user.role]);
+  }, [user.role, userId]);
 
   const handleSingleProfileChange = (event) => {
     const { name, value, files } = event.target;
@@ -89,7 +117,7 @@ const EditProfileForm = () => {
             'Access-Control-Allow-Credentials': true,
           },
         });
-        console.log(response.data);
+        localStorage.setItem('profile', JSON.stringify(response.data));
       } else {
         const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', formData, {
           withCredentials: true,
@@ -98,13 +126,27 @@ const EditProfileForm = () => {
             'Access-Control-Allow-Credentials': true,
           },
         });
-        console.log(response.data);
+        localStorage.setItem('profile', JSON.stringify(response.data));
       }
-      toast.success('Profile updated successfully');
-      navigate('/');
+      navigate('/profile');
+      toast.success('Profile updated successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+      });
     } catch (error) {
       console.error('Error updating profile:', error.message);
-      toast.error('Failed to update profile. Please try again.');
+      toast.error('Failed to update profile. Please try again.', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+      });
     }
   };
 

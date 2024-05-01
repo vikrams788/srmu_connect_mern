@@ -90,7 +90,8 @@ const Profile = () => {
         senderId: currentUserId,
         recipientId: userData.createdBy,
         fullName: currentUser.fullName,
-        profilePicture: currentUser.profilePicture
+        profilePicture: currentUser.profilePicture,
+        role: currentUserData.role
       }, {
         withCredentials: true,
         headers: {

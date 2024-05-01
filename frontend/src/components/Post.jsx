@@ -4,7 +4,7 @@ import moment from 'moment';
 import { AiOutlineClose, AiFillLike, AiOutlineLike, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { LuSend } from "react-icons/lu";
 import Comments from './Comments';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DeletePost from './DeletePost';
 import { toast } from 'react-toastify';
 
@@ -12,6 +12,7 @@ const Post = ({ post }) => {
   const navigate = useNavigate();
   const [creatorProfile, setCreatorProfile] = useState(null);
   const [liked, setLiked] = useState(post.isLiked);
+  const { userId, profileType } = useParams();
   const [showComments, setShowComments] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [newComment, setNewComment] = useState({
@@ -28,31 +29,39 @@ const Post = ({ post }) => {
     const fetchCreatorProfile = async () => {
       try {
         if(user.role !== 'teacher') {
-          const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/profile/${post.createdBy}`, {
-            withCredentials: true,
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Credentials': true,
-            },
-          });
-          setCreatorProfile(response.data);
-          const currentUserId = userProfile.createdBy;
-          setLiked(post.likes.some(function(like){
-            return like.likedBy == currentUserId
-          }));
+          if(profileType !== 'teacher') {
+            const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/profile/${post.createdBy}`, {
+              withCredentials: true,
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Credentials': true,
+              },
+            });
+            setCreatorProfile(response.data);
+            const currentUserId = userProfile.createdBy;
+            setLiked(post.likes.some(function(like){
+              return like.likedBy == currentUserId
+            }));
+          } else {
+            return ;
+          }
         } else {
-          const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/teacher-profile/${post.createdBy}`, {
-            withCredentials: true,
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Credentials': true,
-            },
-          });
-          setCreatorProfile(response.data);
-          const currentUserId = userProfile.createdBy;
-          setLiked(post.likes.some(function(like){
-            return like.likedBy == currentUserId
-          }));
+          if(profileType === 'teacher'){
+            const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/teacher-profile/${post.createdBy}`, {
+              withCredentials: true,
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Credentials': true,
+              },
+            });
+            setCreatorProfile(response.data);
+            const currentUserId = userProfile.createdBy;
+            setLiked(post.likes.some(function(like){
+              return like.likedBy == currentUserId
+            }));
+          } else {
+            return ;
+          }
         }
       } catch (error) {
         console.error('Error fetching creator profile:', error);
@@ -60,7 +69,7 @@ const Post = ({ post }) => {
     };
 
     fetchCreatorProfile();
-  }, [post.createdBy, post.likes, user.role, userProfile.createdBy]);
+  }, [post.createdBy, post.likes, profileType, user.role, userId, userProfile.createdBy]);
 
   // useEffect(() => {
   //   // Check if the current user has liked this post
@@ -208,7 +217,7 @@ const Post = ({ post }) => {
             </>
           )}
         </div>
-        {userProfile.createdBy === post.createdBy && (
+        {userProfile.createdBy === post.createdBy || user.role === 'teacher' && (
           <div className="relative flex items-center">
             <AiOutlineEdit className="text-gray-500 hover:text-blue-500 m-2 cursor-pointer mr-2 w-6 h-6" onClick={() => handlePostEdit(post._id)} />
             <AiOutlineDelete className="text-gray-500 hover:text-red-500 m-2 cursor-pointer w-6 h-6" onClick={handleDeleteConfirmation} />
@@ -283,7 +292,7 @@ const Post = ({ post }) => {
               />
               <LuSend className="m-3 w-6 h-6 text-gray-700 hover:text-blue-500" onClick={() => {handleCommentSubmit(selectedPostId)}}/>
             </div>
-            <Comments comments={post.comments} postId={selectedPostId} />
+            <Comments comments={post.comments} postId={selectedPostId} userRole = {user.role} />
           </div>
         </div>
       )}

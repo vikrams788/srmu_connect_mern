@@ -18,13 +18,14 @@ const Signup = () => {
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
 
-    const validEmailPattern = /@srmu\.ac\.in$/;
-    const isEmailValid = validEmailPattern.test(email);
+    // const validEmailPattern = /@srmu\.ac\.in$/;
+    // const isEmailValid = validEmailPattern.test(email);
 
-    if (!isEmailValid) {
-      setError('Please enter a valid SRMU email ID');
-      return;
-    }
+    // if (!isEmailValid) {
+    //   setError('Please enter a valid SRMU email ID');
+    //   return;
+    // }
+
     try {
       const response = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/send-otp`, { email }, {
         withCredentials: true,
@@ -76,9 +77,16 @@ const Signup = () => {
           pauseOnHover: true,
           draggable: true,
         });
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        localStorage.setItem('token', JSON.stringify(response.data.token2));
-        navigate('/edit-profile');
+        const user = response.data.user;
+        const token = response.data.token2;
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('token', JSON.stringify(token));
+        if(user.role === 'teacher') {
+          navigate('/edit-teacher-profile')
+        } else {
+          navigate('/edit-profile');
+        }
+        
       } else {
         setError('Failed to create user. Please try again.');
       }

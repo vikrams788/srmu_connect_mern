@@ -35,6 +35,8 @@ const Login = () => {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
 
+      navigate('/');
+
       toast.success('Logged in successfully', {
         position: 'top-right',
         autoClose: 1000,
@@ -44,7 +46,6 @@ const Login = () => {
         draggable: true,
       });
 
-      navigate('/');
     } catch (error) {
       console.error('Error in login:', error.response.data.message);
       setError(error.response.data.message);

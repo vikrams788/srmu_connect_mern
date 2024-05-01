@@ -3,7 +3,7 @@ const User = require('../models/User');
 const mongoose = require('mongoose');
 
 exports.sendFriendRequest = async (req, res) => {
-    const { senderId, recipientId, fullName, profilePicture } = req.body;
+    const { senderId, recipientId, fullName, profilePicture, role } = req.body;
 
     try {
         const existingRequestAB = await FriendRequest.findOne({ sender: senderId, recipient: recipientId });
@@ -26,7 +26,8 @@ exports.sendFriendRequest = async (req, res) => {
                 pendingRequests: {
                     userId: senderId,
                     fullName: fullName,
-                    profilePicture: profilePicture
+                    profilePicture: profilePicture,
+                    role: role
                 }
             }
         });
@@ -55,7 +56,8 @@ exports.acceptFriendRequest = async (req, res) => {
                     friends: {
                         userId: request.sender,
                         fullName: req.body.fullName,
-                        profilePicture: req.body.profilePicture
+                        profilePicture: req.body.profilePicture,
+                        role: req.body.role
                     }
                 },
                 $pull: { pendingRequests: { userId: request.sender } }
@@ -70,7 +72,8 @@ exports.acceptFriendRequest = async (req, res) => {
                     friends: {
                         userId: request.recipient,
                         fullName: req.body.currentUserFullName,
-                        profilePicture: req.body.currentUserProfilePicture
+                        profilePicture: req.body.currentUserProfilePicture,
+                        role: req.body.currentUserRole
                     }
                 }
             },

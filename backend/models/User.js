@@ -42,6 +42,9 @@ const userSchema = new mongoose.Schema({
             profilePicture: {
                 type: String,
                 required: true
+            },
+            role: {
+                type: String
             }
         }
     ],
@@ -59,6 +62,9 @@ const userSchema = new mongoose.Schema({
             profilePicture: {
                 type: String,
                 required: true
+            },
+            role: {
+                type: String
             }
         }
     ],

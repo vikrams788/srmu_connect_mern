@@ -33,8 +33,12 @@ const LeftComponent = () => {
   }, []);
 
 
-  const handleFriendClick = (friendUserId) => {
-    navigate(`/profile/${friendUserId}`);
+  const handleFriendClick = (friend) => {
+    if(friend.role !== 'teacher'){
+      navigate(`/profile/${friend.userId}`);
+    } else {
+      navigate(`/teacher-profile/${friend.userId}/${friend.role}`);
+    }
   };
 
   return (
@@ -42,7 +46,7 @@ const LeftComponent = () => {
       <h2 className="text-lg font-bold mb-4">Friends List</h2>
       <ul>
         {friends.map((friend) => (
-          <li key={friend.userId} className="mb-2 flex items-center hover:bg-gray-300 cursor-pointer p-2" onClick={() => handleFriendClick(friend.userId)}>
+          <li key={friend.userId} className="mb-2 flex items-center hover:bg-gray-300 cursor-pointer p-2" onClick={() => handleFriendClick(friend)}>
             <img src={friend.profilePicture} alt={friend.fullName} className="w-8 h-8 rounded-full mr-2" />
             <p>{friend.fullName}</p>
           </li>

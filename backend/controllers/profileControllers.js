@@ -32,52 +32,11 @@ exports.createUserProfile = async (req, res) => {
             profilePicture: userProfile.profilePicture || null
         });
 
-        res.status(201).json({ message: 'Profile Saved' })
+        res.status(201).json(userProfile)
 
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ message: 'An error occurred', error: error.message });
-    }
-};
-
-exports.uploadMultipleProfiles = async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ error: 'No file uploaded' });
-        }
-
-        const workbook = new excel.Workbook();
-        const filePath = req.file.path;
-
-        await workbook.xlsx.readFile(filePath);
-
-        const worksheet = workbook.getWorksheet(1);
-        const headers = ['fullName', 'rollNo', 'course', 'semester'];
-
-        const profiles = [];
-
-        worksheet.eachRow((row, rowIndex) => {
-        if (rowIndex > 1) {
-            const profileData = {};
-
-            row.eachCell((cell, colIndex) => {
-            const header = headers[colIndex - 1];
-
-            if (header) {
-                profileData[header] = cell.value || '';
-            }
-            });
-
-            profiles.push(profileData);
-        }
-        });
-
-        await Profile.insertMany(profiles);
-
-        res.status(201).json({ message: 'Profiles uploaded successfully', profiles });
-    } catch (error) {
-        console.error('Error uploading profiles:', error);
-        res.status(500).json({ error: 'Failed to upload profiles. Please try again.' });
     }
 };
 
@@ -111,7 +70,7 @@ exports.editUserProfile = async (req, res) => {
             profilePicture: userProfile.profilePicture || null
         });
 
-        res.status(200).json({ message: 'Profile updated successfully' });
+        res.status(200).json(userProfile);
     } catch (error) {
         console.error('Error updating user profile:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -209,7 +168,7 @@ exports.searchProfiles = async (req, res) => {
             { email: { $regex: query, $options: 'i' } },
             { course: { $regex: query, $options: 'i' } },
             { rollNumber: { $regex: query, $options: 'i' } },
-            { semester: parseInt(query) || 0 }
+            { semester: { $regex: query, $options: 'i' } }
         ]
         });
 

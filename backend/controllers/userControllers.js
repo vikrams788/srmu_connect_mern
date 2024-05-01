@@ -5,7 +5,6 @@ const FriendRequest = require('../models/FriendRequest');
 const Post = require('../models/Post');
 const exceljs = require('exceljs');
 const fs = require('fs');
-const axios = require('axios');
 const otpGenerator = require('otp-generator');
 const nodemailer = require('nodemailer');
 
@@ -15,20 +14,21 @@ exports.login = async (req, res) => {
 
         const user = await User.findOne({ email });
         if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: 'User not found. Signup, instead!' });
         }
 
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
-        return res.status(401).json({ message: 'Invalid password' });
+            return res.status(401).json({ message: 'Invalid email or password' });
         }
 
         const payload = {
             userId: user._id,
             email: user.email,
+            role: user.role
         }
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
+        const token = jwt.sign(payload, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
         const token2 = jwt.sign(payload, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
 
         res.cookie('token', token, { 

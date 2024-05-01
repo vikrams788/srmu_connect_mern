@@ -10,7 +10,6 @@ import FriendRequests from './components/FriendRequests';
 import SingleChat from './components/SingleChat';
 import Library from './components/Library';
 import SignupMultipleUsers from './components/SignupMultipleUsers';
-import AddMultipleProfiles from './components/AddMultipleProfiles';
 import EditTeacherProfile from './components/EditTeacherProfile';
 import TeacherProfile from './components/TeacherProfile';
 
@@ -31,15 +30,16 @@ function App() {
         <Route path='/profile' element={isLoggedIn ? <Profile /> : <Login />} />
         <Route path='/profile/:userId' element={isLoggedIn ? <Profile /> : <Login />} />
         <Route path='/edit-profile' element={isLoggedIn ? <EditProfile /> : <Login />} />
+        <Route path='/edit-profile/:userId' element={isLoggedIn ? <EditProfile /> : <Login />} />
         <Route path='/create-post' element={isLoggedIn ? <CreatePost /> : <Login />} />
         <Route path='/edit-post' element={isLoggedIn ? <EditPost /> : <Login />}/>
         <Route path='/friend-requests' element={isLoggedIn ? <FriendRequests /> : <Login />}/>
         <Route path='/chat' element={isLoggedIn ? <SingleChat /> : <Login />}/>
         <Route path='/e-library' element={isLoggedIn ? <Library /> : <Login />}/>
         <Route path='/add-users' element={isLoggedIn ? <SignupMultipleUsers /> : <Login />}/>
-        <Route path='/add-profiles' element={isLoggedIn ? <AddMultipleProfiles /> : <Login />}/>
         <Route path='/edit-teacher-profile' element={isLoggedIn ? <EditTeacherProfile /> : <Login />}/>
         <Route path='/teacher-profile' element={isLoggedIn ? <TeacherProfile /> : <Login />}/>
+        <Route path='/teacher-profile/:userId/:profileType' element={isLoggedIn ? <TeacherProfile /> : <Login />}/>
       </Routes>
     </BrowserRouter>
   )

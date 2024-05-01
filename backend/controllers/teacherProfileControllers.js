@@ -30,8 +30,8 @@ exports.createTeacherProfile = async (req, res) => {
         const savedProfile = await newProfile.save();
 
         const user = await User.findByIdAndUpdate(req.user.userId, {
-            fullName: newProfile.fullName,
-            profilePicture: newProfile.profilePicture || null
+            fullName: savedProfile.fullName,
+            profilePicture: savedProfile.profilePicture || null
         });
 
         return res.status(201).json(savedProfile);
@@ -101,10 +101,10 @@ exports.editTeacherProfileById = async (req, res) => {
 };
 
 exports.getAnotherTeacherProfileById = async (req, res) => {
-    const { profileId } = req.params;
+    const { userId } = req.params;
 
     try {
-        const profile = await TeacherProfile.findById(profileId);
+        const profile = await TeacherProfile.findOne({createdBy: userId});
 
         if (!profile) {
             return res.status(404).json({ message: 'Teacher profile not found' });
@@ -154,9 +154,10 @@ exports.searchTeacherProfiles = async (req, res) => {
 
 exports.getAllNonFriendProfiles = async (req, res) => {
     try {
-        const userId = req.user.userId;
+        let email = req.user.email;
+        email.toString();
 
-        const currentUser = await User.findById(userId);
+        const currentUser = await User.findOne({email: email});
 
         if (!currentUser) {
             return res.status(404).json({ message: 'User profile not found' });

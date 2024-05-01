@@ -18,7 +18,7 @@ const Profile = () => {
   const { userId } = useParams();
   const currentUser = JSON.parse(localStorage.getItem('profile'));
   const currentUserData = JSON.parse(localStorage.getItem('user'));
-  const currentUserId = currentUser.createdBy;
+  const currentUserId = currentUserData._id;
   const [areFriends, setAreFriends] = useState(false);
   const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
@@ -51,6 +51,12 @@ const Profile = () => {
           },
         });
 
+        if(profileResponse){
+          setUserData(profileResponse.data);
+        } else {
+          navigate(`/teacher-profile/${userId}`);
+        }
+
         setUserData(profileResponse.data);
         setUserPosts(postsResponse.data);
 
@@ -76,7 +82,7 @@ const Profile = () => {
     };
 
     fetchUserData();
-  }, [currentUser?.fullName, currentUserData?.friends, currentUserData.role, userData?.fullName, userId]);
+  }, [currentUser?.fullName, currentUserData?.friends, currentUserData.role, navigate, userData?.fullName, userId]);
 
   //Create Post
   const handleCreatePostClick = () => {
@@ -84,13 +90,15 @@ const Profile = () => {
   }
 
   //Send Friend Request
-  const handleAddFriend = async () => {
+  const handleAddFriend = async (role) => {
     try {
+      console.log(role);
       const response = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/friend-requests`, {
         senderId: currentUserId,
         recipientId: userData.createdBy,
         fullName: currentUser.fullName,
-        profilePicture: currentUser.profilePicture
+        profilePicture: currentUser.profilePicture,
+        role: role
       }, {
         withCredentials: true,
         headers: {
@@ -172,7 +180,7 @@ const Profile = () => {
                     {userData.createdBy !== currentUserId && (<>
                         { areFriends === false && (<><FaUserPlus
                         className='w-6 h-6 text-gray-700 hover:text-blue-500 m-2'
-                        onClick={handleAddFriend}
+                        onClick={() => handleAddFriend(currentUserData.role)}
                         data-tooltip-id="add-friend-tooltip"
                         data-tooltip-content="Add Friend" /><Tooltip id='add-friend-tooltip' /></>)}
                         { areFriends === true && (<><FaUserMinus
@@ -188,13 +196,17 @@ const Profile = () => {
                         />
                         <Tooltip id='send-message-tooltip' /></>)}
                             </>)}
-                        { userData.createdBy === currentUserId && (<><MdOutlineModeEditOutline
+                        { userData.createdBy === currentUserId || currentUserData.role === 'teacher' && (<><MdOutlineModeEditOutline
                           className=' w-6 h-6 hover:text-blue-500 text-gray-700 m-2'
                           onClick={() => { 
                             if(currentUserData.role !== 'teacher') {
                               navigate('/edit-profile'); 
                             } else {
-                              navigate('/edit-teacher-profile');
+                              if(userId) {
+                                navigate(`/edit-profile/${userId}`)
+                              } else {
+                                navigate('/edit-teacher-profile');
+                              }
                             }
                           } }
                           data-tooltip-id="edit-profile-tooltip"

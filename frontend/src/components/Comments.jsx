@@ -4,7 +4,7 @@ import moment from 'moment';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { toast } from 'react-toastify';
 
-const Comments = ({ postId }) => {
+const Comments = ({ postId, userRole }) => {
   const [comments, setComments] = useState([]);
   const userProfile = JSON.parse(localStorage.getItem('profile'));
 
@@ -74,7 +74,7 @@ const Comments = ({ postId }) => {
                 <p className="font-semibold">{comment.fullName}</p>
                 <div className="flex justify-between">
                   <p className="text-gray-500 text-sm">{moment(comment.createdAt).fromNow()}</p>
-                  {userProfile.createdBy === comment.createdBy && (
+                  {userProfile.createdBy === comment.createdBy || userRole === 'teacher' && (
                     <button
                       className="mt-1 mr-1 "
                       onClick={() => handleDeleteComment(comment._id)}

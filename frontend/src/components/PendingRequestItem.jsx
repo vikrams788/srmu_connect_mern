@@ -4,14 +4,16 @@ import { toast } from 'react-toastify';
 const PendingRequestItem = ({ request }) => {
     const handleAcceptRequest = async () => {
         const requestId = request.userId;
-        const currentUser = JSON.parse(localStorage.getItem('profile'))
+        const currentUser = JSON.parse(localStorage.getItem('user'))
 
         try {
             const response = await axios.put(`${import.meta.env.VITE_REACT_APP_API_URL}/api/friend-requests/${requestId}`, {
+                role: request.role,
                 fullName: request.fullName,
                 profilePicture: request.profilePicture,
                 currentUserFullName: currentUser.fullName,
-                currentUserProfilePicture: currentUser.profilePicture
+                currentUserProfilePicture: currentUser.profilePicture,
+                currentUserRole: currentUser.role
               }, {
                 withCredentials: true,
                 headers: {
