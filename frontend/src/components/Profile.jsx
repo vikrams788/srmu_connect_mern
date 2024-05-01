@@ -155,7 +155,7 @@ const Profile = () => {
   };
 
   const handleChat = () => {
-    localStorage.setItem('anotherUserName', userData.fullName);
+    localStorage.setItem('anotherUserId', userData.createdBy);
     navigate('/chat');
   }
 

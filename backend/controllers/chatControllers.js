@@ -3,17 +3,17 @@ const User = require('../models/User');
 
 exports.accessChat = async (req, res) => {
     const currentUserId = req.user.userId;
-    const { anotherUserName } = req.query;
+    const { anotherUserId } = req.params;
 
     const user = await User.findById(currentUserId);
-    const anotherUser = await User.findOne({fullName: anotherUserName});
+    const anotherUser = await User.findOne({_id: anotherUserId});
 
     if (!user || !anotherUser) {
         return res.status(404).json({ message: 'User not found' });
     }
 
     const isFriendOfUser = user.friends.some(function(friend){
-        return friend.fullName.includes(anotherUserName);
+        return friend.userId == anotherUserId;
     });
 
     if (!isFriendOfUser) {

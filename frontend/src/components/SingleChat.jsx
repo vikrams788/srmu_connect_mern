@@ -6,22 +6,21 @@ import Footer from '../partials/Footer';
 import LeftComponent from './LeftComponent';
 import Header from '../partials/Header';
 
+var socket, singleChatCompare;
+
 const SingleChat = () => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
-  const [socket, setSocket] = useState(null);
+  const [socketConnected, setSocketConnected] = useState(false);
   const [chat, setChat] = useState(null)
-  const anotherUserName = localStorage.getItem('anotherUserName');
+  const anotherUserId = localStorage.getItem('anotherUserId');
   const user = JSON.parse(localStorage.getItem('user'));
   const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
   useEffect(() => {
     const fetchChatInfo = async () => {
       try {
-        const chatResponse = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/chat`, {
-            params: {
-                anotherUserName: anotherUserName
-            },
+        const chatResponse = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/chat/${anotherUserId}`, {
             withCredentials: true,
             headers: {
               'Content-Type': 'application/json',
@@ -37,10 +36,7 @@ const SingleChat = () => {
 
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/all-messages`, {
-            params: {
-                chatId: chat._id
-            },
+        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/all-messages/${chat._id}`, {
             withCredentials: true,
             headers: {
               'Content-Type': 'application/json',
@@ -48,6 +44,8 @@ const SingleChat = () => {
             },
           });
         setMessages(response.data);
+
+        socket.emit('join chat', chat._id);
       } catch (error) {
         // console.error('Error fetching messages:', error);
       }
@@ -62,35 +60,14 @@ const SingleChat = () => {
     } else {
       setShowAdminFeatures(false);
     }
-
-    // Initialize WebSocket connection
-    const newSocket = io(import.meta.env.VITE_REACT_APP_API_URL);
-    setSocket(newSocket);
-
-    return () => {
-      // Close socket connection when component unmounts
-      if (socket) {
-        socket.disconnect();
-      }
-    };
     
-  }, [anotherUserName, chat._id, socket, user.role]);
+  }, [anotherUserId, user.role]);
 
   useEffect(() => {
-    // Listen for new messages from socket.io
-    if (socket) {
-      socket.on('newMessage', (newMessage) => {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-      });
-    }
-
-    return () => {
-      // Remove event listener when component unmounts
-      if (socket) {
-        socket.off('newMessage');
-      }
-    };
-  }, [socket]);
+    socket = io(import.meta.env.VITE_REACT_APP_API_URL);
+    socket.emit("setup", user);
+    socket.on('connection', () => setSocketConnected(true))
+  }, [user]);
 
   const sendMessage = async () => {
     if (!inputMessage.trim() || !chat) return;

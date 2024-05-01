@@ -12,7 +12,7 @@ exports.sendMessage = async (req, res) => {
     };
 
     try {
-        const message = await Message.create(newMessage);
+        let message = await Message.create(newMessage);
 
         message = await message.populate('sender', 'fullName profilePicture');
         message = await message.populate('chat');
@@ -27,6 +27,7 @@ exports.sendMessage = async (req, res) => {
 
         res.status(201).json(message)
     } catch (error) {
+        console.log(error);
         res.status(500).json({message: 'Internal server error'});
     }
 };

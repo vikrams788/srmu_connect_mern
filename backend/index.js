@@ -54,15 +54,15 @@ const io = require('socket.io')(server, {
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  // socket.on('setup', (userData) => {
-  //     socket.join(userData._id);
-  //     socket.emit('connected')
-  // });
+  socket.on('setup', (userData) => {
+      socket.join(userData._id);
+      socket.emit('connected')
+  });
 
-  // socket.on('join room', (room) => {
-  //   socket.join(room);
-  //   console.log('User joined the room');
-  // });
+  socket.on('join chat', (room) => {
+    socket.join(room);
+    console.log('User joined the room');
+  });
   socket.on('sendMessage', ({ content, chatId }) => {
     // Save message to database (e.g., using your existing `sendMessage` controller)
     // Emit the new message to other clients in the same chat room
