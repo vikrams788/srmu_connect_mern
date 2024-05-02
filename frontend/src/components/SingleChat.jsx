@@ -6,7 +6,7 @@ import Footer from '../partials/Footer';
 import LeftComponent from './LeftComponent';
 import Header from '../partials/Header';
 
-var socket, singleChatCompare;
+var socket, singleChatCompare, selectedChatCompare;
 
 const SingleChat = () => {
   const [messages, setMessages] = useState([]);
@@ -16,6 +16,12 @@ const SingleChat = () => {
   const anotherUserId = localStorage.getItem('anotherUserId');
   const user = JSON.parse(localStorage.getItem('user'));
   const [showAdminFeatures, setShowAdminFeatures] = useState(false);
+
+  useEffect(() => {
+    socket = io(import.meta.env.VITE_REACT_APP_API_URL);
+    socket.emit("setup", user);
+    socket.on('connection', () => setSocketConnected(true))
+  }, []);
 
   useEffect(() => {
     const fetchChatInfo = async () => {
@@ -28,7 +34,6 @@ const SingleChat = () => {
             },
           });
         setChat(chatResponse.data);
-        // console.log('Chat Info:', chatResponse.data);
       } catch (error) {
         console.error('Error fetching chat information:', error);
       }
@@ -36,24 +41,28 @@ const SingleChat = () => {
 
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/all-messages/${chat._id}`, {
-            withCredentials: true,
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Credentials': true,
-            },
-          });
-        setMessages(response.data);
+        if (chat && chat._id) {
+          const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/all-messages/${chat._id}`, {
+              withCredentials: true,
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Credentials': true,
+              },
+            });
+          setMessages(response.data);
 
-        socket.emit('join chat', chat._id);
+          socket.emit('join chat', chat._id);
+        }
       } catch (error) {
-        // console.error('Error fetching messages:', error);
+        console.error('Error fetching messages:', error);
       }
     };
 
-    fetchChatInfo(); // Fetch chat information before messages
+    fetchChatInfo();
 
-    fetchMessages(); // Fetch messages for the selected chat
+    fetchMessages();
+
+    selectedChatCompare = chat;
 
     if(user.role === 'admin' || user.role === 'teacher') {
       setShowAdminFeatures(true);
@@ -61,19 +70,22 @@ const SingleChat = () => {
       setShowAdminFeatures(false);
     }
     
-  }, [anotherUserId, user.role]);
+  }, [anotherUserId, chat, user.role]);
 
   useEffect(() => {
-    socket = io(import.meta.env.VITE_REACT_APP_API_URL);
-    socket.emit("setup", user);
-    socket.on('connection', () => setSocketConnected(true))
-  }, [user]);
+    socket.on("message recieved", (newMessageRecieved) => {
+      if(!selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id) {
+        //give notification
+      } else {
+        setMessages([...messages, newMessageRecieved])
+      }
+    })
+  }, [messages])
 
   const sendMessage = async () => {
     if (!inputMessage.trim() || !chat) return;
 
     try {
-      // Send message to backend using Axios
       const response = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/send`, {
         content: inputMessage,
         chatId: chat._id,
@@ -91,10 +103,10 @@ const SingleChat = () => {
         sender: { fullName: 'You' }
       };
 
-      // Update local state with the new message
+      socket.emit('new message', response.data)
+
       setMessages((prevMessages) => [...prevMessages, newMessage]);
 
-      // Clear input field
       setInputMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
@@ -104,16 +116,20 @@ const SingleChat = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header isAdmin={showAdminFeatures}/>
-      <div className="flex flex-grow">
-        <div className="w-1/4">
+      <div className="flex flex-grow mt-4">
+        <div className="w-1/5 p-4">
           <LeftComponent />
         </div>
-        <div className="w-1/2 flex flex-col">
+        <div className="w-3/5 flex flex-col p-2">
           {messages.length > 0 ? (
-            <div className="flex-grow p-4 bg-white rounded-lg shadow-md overflow-y-auto">
+            <div className="flex-grow p-4 bg-white overflow-y-auto custom-scrollbar" style={{ maxHeight: '75vh' }}>
               {messages.map((message, index) => (
-                <div key={index} className="mb-2 p-2 rounded-lg bg-gray-100">
-                  <p className="text-gray-800">{message.content}</p>
+                <div
+                  key={index}
+                  className={`mb-2 rounded-lg max-w-full ${message.sender._id === user._id ? 'bg-blue-200 ml-auto' : 'bg-gray-200 mr-auto'}`}
+                  style={{ width: `${(message.content.length * 2) + 100}px` }}
+                >
+                  <p className={`p-2 text-gray-800 ${message.sender._id === user._id ? 'text-right' : 'text-left'}`}>{message.content}</p>
                 </div>
               ))}
             </div>
@@ -138,7 +154,7 @@ const SingleChat = () => {
             </button>
           </div>
         </div>
-        <div className="w-1/4">
+        <div className="w-1/5 p-4">
           <RightComponent />
         </div>
       </div>

@@ -63,10 +63,18 @@ io.on('connection', (socket) => {
     socket.join(room);
     console.log('User joined the room');
   });
-  socket.on('sendMessage', ({ content, chatId }) => {
-    // Save message to database (e.g., using your existing `sendMessage` controller)
-    // Emit the new message to other clients in the same chat room
-    io.emit('newMessage', { content, sender: 'User' });
+
+  socket.on('new message', (newMessageRecieved) => {
+    var chat = newMessageRecieved.chat;
+
+    if(!chat.users) return console.log('chat.users not defined');
+
+    chat.users.forEach(user => {
+      if(user._id == newMessageRecieved.sender._id){
+        return ;
+      }
+      socket.in(user._id).emit("message recieved", newMessageRecieved);
+    });
   });
 
   socket.on('disconnect', () => {

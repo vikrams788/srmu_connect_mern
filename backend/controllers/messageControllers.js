@@ -8,7 +8,7 @@ exports.sendMessage = async (req, res) => {
     var newMessage = {
         sender: req.user.userId,
         content: content,
-        chatId, chatId
+        chat: chatId
     };
 
     try {

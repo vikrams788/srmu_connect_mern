@@ -12,13 +12,15 @@ exports.accessChat = async (req, res) => {
         return res.status(404).json({ message: 'User not found' });
     }
 
-    const isFriendOfUser = user.friends.some(function(friend){
-        return friend.userId == anotherUserId;
-    });
+    // if(user.role !== 'admin' || user.role !== 'teacher'){
+    //     const isFriendOfUser = user.friends.some(function(friend){
+    //         return friend.userId == anotherUserId;
+    //     });
 
-    if (!isFriendOfUser) {
-        return res.status(403).json({ message: 'You can only access chats with your friends' });
-    }
+    //     if (!isFriendOfUser) {
+    //         return res.status(403).json({ message: 'You can only access chats with your friends' });
+    //     }
+    // }
 
     var isChat = await Chat.find({
         isGroupChat: false,
