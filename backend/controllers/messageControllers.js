@@ -3,12 +3,14 @@ const Message = require('../models/Message');
 const User = require('../models/User');
 
 exports.sendMessage = async (req, res) => {
-    const { content, chatId } = req.body;
+    const { content, chatId, fullName, profilePicture } = req.body;
 
     var newMessage = {
         sender: req.user.userId,
         content: content,
-        chat: chatId
+        chat: chatId,
+        fullName: fullName,
+        profilePicture: profilePicture
     };
 
     try {

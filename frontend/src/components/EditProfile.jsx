@@ -159,7 +159,7 @@ const EditProfileForm = () => {
             <LeftComponent />
           </div>
           <div className="md:w-2/3">
-            <div className="bg-white shadow-md rounded-lg flex flex-col px-8 pt-6 pb-8 mb-4">
+            <div className="bg-white flex flex-col px-8 pt-6 pb-8 mb-4">
               <h2 className="text-2xl font-bold mb-4 text-center">Edit Profile</h2>
                 <form onSubmit={handleSubmitSingleProfile} encType="multipart/form-data">
                   <div className="mb-4">

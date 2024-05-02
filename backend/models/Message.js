@@ -16,6 +16,12 @@ const messageSchema = new mongoose.Schema(
         chat: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Chat'
+        },
+        fullName: {
+            type: String
+        },
+        profilePicture: {
+            type: String
         }
     },
     {

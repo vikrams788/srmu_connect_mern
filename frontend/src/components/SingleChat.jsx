@@ -6,7 +6,7 @@ import Footer from '../partials/Footer';
 import LeftComponent from './LeftComponent';
 import Header from '../partials/Header';
 
-var socket, singleChatCompare, selectedChatCompare;
+var socket, selectedChatCompare;
 
 const SingleChat = () => {
   const [messages, setMessages] = useState([]);
@@ -14,6 +14,7 @@ const SingleChat = () => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [chat, setChat] = useState(null)
   const anotherUserId = localStorage.getItem('anotherUserId');
+  const profile = JSON.parse(localStorage.getItem('profile'));
   const user = JSON.parse(localStorage.getItem('user'));
   const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
@@ -89,6 +90,8 @@ const SingleChat = () => {
       const response = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/send`, {
         content: inputMessage,
         chatId: chat._id,
+        fullName: user.fullName,
+        profilePicture: profile.profilePicture
       }, {
         withCredentials: true,
         headers: {
@@ -121,23 +124,40 @@ const SingleChat = () => {
           <LeftComponent />
         </div>
         <div className="w-3/5 flex flex-col p-2">
-          {messages.length > 0 ? (
-            <div className="flex-grow p-4 bg-white overflow-y-auto custom-scrollbar" style={{ maxHeight: '75vh' }}>
+        {messages.length > 0 ? (
+          <div className="flex-grow p-4 bg-white overflow-y-auto" style={{ maxHeight: '75vh', paddingRight: '16px', marginRight: '-16px' }}>
+            <div className="scrollbar-hide">
               {messages.map((message, index) => (
                 <div
                   key={index}
-                  className={`mb-2 rounded-lg max-w-full ${message.sender._id === user._id ? 'bg-blue-200 ml-auto' : 'bg-gray-200 mr-auto'}`}
-                  style={{ width: `${(message.content.length * 2) + 100}px` }}
+                  className={`mb-2 flex items-center ${message.sender._id === user._id ? 'justify-end' : 'justify-start'}`}
                 >
-                  <p className={`p-2 text-gray-800 ${message.sender._id === user._id ? 'text-right' : 'text-left'}`}>{message.content}</p>
+                  {message.sender._id !== user._id && (
+                    <img
+                      src={message.profilePicture}
+                      alt="Profile Picture"
+                      className="w-8 h-8 rounded-full mr-2"
+                    />
+                  )}
+                  <div className={`rounded-lg ${message.sender._id === user._id ? 'bg-blue-200 ml-auto' : 'bg-gray-200 mr-auto'}`} style={{ width: `${(message.content.length * 2) + 100}px` }}>
+                    <p className={`p-2 text-gray-800 ${message.sender._id === user._id ? 'text-right' : 'text-left'}`}>{message.content}</p>
+                  </div>
+                  {message.sender._id === user._id && (
+                    <img
+                      src={message.profilePicture}
+                      alt="Profile Picture"
+                      className="w-8 h-8 rounded-full ml-2"
+                    />
+                  )}
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="flex-grow flex items-center justify-center text-gray-500 font-semibold">
-              No messages yet
-            </div>
-          )}
+          </div>
+        ) : (
+          <div className="flex-grow flex items-center justify-center text-gray-500 font-semibold">
+            No messages yet
+          </div>
+        )}
           <div className="input-container p-4 flex items-center">
             <input
               type="text"

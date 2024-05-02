@@ -1,7 +1,7 @@
 
 const Book = ({ imageUrl, bookName, authorName, url }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-lg">
+    <div className="bg-white overflow-hidden transition duration-300 hover:shadow-lg">
       <a href={url} target="_blank" rel="noopener noreferrer">
         <img src={imageUrl} alt={bookName} className="w-full h-64 object-cover" />
         <div className="p-4">

@@ -93,12 +93,12 @@ function Home() {
           </div>
           <div className="w-full md:w-2/3 px-4 overflow-y-auto h-screen custom-scrollbar">
             {!userData ? (
-              <div className="bg-white shadow-md p-6 rounded-lg mb-6">
+              <div className="bg-white p-6 mb-6">
                 <p>No profile found, <a href="/edit-profile" className="text-blue-500 hover:text-blue-700">Create one now!</a></p>
               </div>
             )
             : (
-              <div className="bg-white shadow-md p-6 rounded-lg mb-6">
+              <div className="bg-white p-6 mb-6">
                 <div className="text-center">
                   <img src={userData.profilePicture} alt="Profile" className="w-40 h-40 rounded-full mx-auto mb-4" />
                   <h1 className="text-2xl font-bold mb-4">{userData.fullName}</h1>

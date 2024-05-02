@@ -50,9 +50,9 @@ const Profile = () => {
             'Access-Control-Allow-Credentials': true,
           },
         });
-
-        setUserData(profileResponse.data);
-        setUserPosts(postsResponse.data);
+        if(profileResponse) setUserData(profileResponse.data);
+        
+        if(postsResponse) setUserPosts(postsResponse.data);
 
         if(currentUser?.fullName !== userData?.fullName){
           if(userId) {
@@ -162,7 +162,7 @@ const Profile = () => {
           </div>
           <div className="w-full md:w-2/3 px-4 h-screen overflow-y-auto overflow-x-hidden custom-scrollbar">
             {userData && (
-              <div className="bg-white shadow-md p-6 rounded-lg mb-6 grid grid-cols-2 gap-4">
+              <div className="bg-white p-6 mb-6 grid grid-cols-2 gap-4">
                 <div className="col-span-2 text-center">
                   <img src={userData.profilePicture} alt="Profile" className="w-40 h-40 rounded-full mx-auto mb-4" />
                 </div>
@@ -217,11 +217,13 @@ const Profile = () => {
               onClick={handleCreatePostClick}
             />
             <h1 className="text-2xl py-3 font-bold mb-4">{userData?.fullName.split(' ')[0]}&apos;s Posts</h1>
-            <div>
+            {userPosts ? (<div>
               {userPosts.map((post) => (
                 <Post key={post._id} post={post} />
               ))}
-            </div>
+            </div>) : (<div>
+              <p className='p-4 text-gray-500'>No posts yet</p>
+            </div>)}
           </div>
           <div className="w-full md:w-1/6 hidden h-screen md:block custom-scrollbar">
             <RightComponent />

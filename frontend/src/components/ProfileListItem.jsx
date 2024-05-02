@@ -15,7 +15,7 @@ const ProfileListItem = ({ profile, onSendRequest }) => {
     }
 
     return (
-        <div className="bg-white shadow-md p-4 mb-4 rounded-lg flex items-center justify-between">
+        <div className="bg-white p-4 mb-4 flex items-center justify-between">
             <div className="flex items-center">
                 <img src={profile.profilePicture} alt={profile.fullName} className="w-12 h-12 rounded-full mr-4" />
                 <p>{profile.fullName}</p>

@@ -3,7 +3,7 @@ const cloudinary = require('cloudinary').v2;
 
 exports.createPost = async (req, res) => {
     try {
-        const { text, link, postType, embeddedVideo } = req.body;
+        const { text, link, postType, embeddedVideo, profilePicture, fullName } = req.body;
         let imageUrl, videoUrl;
         const userId = req.user.userId;
 
@@ -22,7 +22,9 @@ exports.createPost = async (req, res) => {
             image: imageUrl,
             video: videoUrl,
             postType,
-            embeddedVideo
+            embeddedVideo,
+            profilePicture,
+            fullName
         });
 
         await newPost.save();

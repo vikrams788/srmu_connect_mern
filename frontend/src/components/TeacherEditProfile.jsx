@@ -113,7 +113,7 @@ const TeacherEditProfile = () => {
             <LeftComponent />
           </div>
           <div className="md:w-2/3">
-            <div className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
+            <div className="bg-white px-8 pt-6 pb-8 mb-4">
               <h2 className="text-2xl font-bold mb-4 text-center">Edit Teacher Profile</h2>
               <form onSubmit={handleSubmit} className="flex flex-col" encType="multipart/form-data">
                 <div className="mb-4">

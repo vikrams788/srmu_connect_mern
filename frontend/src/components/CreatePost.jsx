@@ -14,7 +14,9 @@ const CreatePost = ({post}) => {
     image: '',
     video: '',
     embeddedVideo: '',
-    postType: 'text-option'
+    postType: 'text-option',
+    profilePicture: '',
+    fullName: ''
   });
 
   useEffect(() => {
@@ -25,7 +27,9 @@ const CreatePost = ({post}) => {
         image: '',
         video: '',
         embeddedVideo: '',
-        postType: 'text-option'
+        postType: 'text-option',
+        profilePicture: post.profilePicture || '',
+        fullName: post.fullName || ''
       });
     }
   }, [post]);
@@ -48,6 +52,8 @@ const CreatePost = ({post}) => {
       data.append('text', formData.text);
       data.append('link', formData.link);
       data.append('postType', formData.postType);
+      data.append('fullName', user.fullName);
+      data.append('profilePicture', user.profilePicture);
       if (formData.image) {
         data.append('image', formData.image);
       } else if (formData.video) {
@@ -144,7 +150,7 @@ const CreatePost = ({post}) => {
             <LeftComponent />
           </div>
           <div className="md:w-2/3">
-            <div className="bg-white shadow-md rounded-lg px-4 py-6 md:px-8 md:py-8 mb-4">
+            <div className="bg-white px-4 py-6 md:px-8 md:py-8 mb-4">
               <div className="mx-auto rounded-full overflow-hidden" style={{ height: "200px", width: "200px" }}>
                 <img src={userProfile.profilePicture} alt="Profile" className="object-cover w-full h-full" style={{ borderRadius: '100%' }} />
               </div>

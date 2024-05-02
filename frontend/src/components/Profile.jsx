@@ -169,7 +169,7 @@ const Profile = () => {
           </div>
           <div className="w-full md:w-2/3 px-4 h-screen overflow-y-auto overflow-x-hidden custom-scrollbar">
             {userData && (
-              <div className="bg-white shadow-md p-6 rounded-lg mb-6 grid grid-cols-2 gap-4">
+              <div className="bg-white p-6 mb-6 grid grid-cols-2 gap-4">
                 <div className="col-span-2 text-center">
                   <img src={userData.profilePicture} alt="Profile" className="w-40 h-40 rounded-full mx-auto mb-4" />
                 </div>

@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { AiOutlineClose, AiFillLike, AiOutlineLike, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { LuSend } from "react-icons/lu";
 import Comments from './Comments';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import DeletePost from './DeletePost';
 import { toast } from 'react-toastify';
 
 const Post = ({ post }) => {
   const navigate = useNavigate();
-  const [creatorProfile, setCreatorProfile] = useState(null);
+  // const [creatorProfile, setCreatorProfile] = useState(null);
   const [liked, setLiked] = useState(post.isLiked);
-  const { userId, profileType } = useParams();
+  // const { userId, profileType } = useParams();
   const [showComments, setShowComments] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [newComment, setNewComment] = useState({
@@ -25,51 +25,51 @@ const Post = ({ post }) => {
   const [showDeletePost, setShowDeletePost] = useState(false);
 
   //Fetch the profile of the creator
-  useEffect(() => {
-    const fetchCreatorProfile = async () => {
-      try {
-        if(user.role !== 'teacher') {
-          if(profileType !== 'teacher') {
-            const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/profile/${post.createdBy}`, {
-              withCredentials: true,
-              headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': true,
-              },
-            });
-            setCreatorProfile(response.data);
-            const currentUserId = userProfile.createdBy;
-            setLiked(post.likes.some(function(like){
-              return like.likedBy == currentUserId
-            }));
-          } else {
-            return ;
-          }
-        } else {
-          if(profileType === 'teacher'){
-            const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/teacher-profile/${post.createdBy}`, {
-              withCredentials: true,
-              headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': true,
-              },
-            });
-            setCreatorProfile(response.data);
-            const currentUserId = userProfile.createdBy;
-            setLiked(post.likes.some(function(like){
-              return like.likedBy == currentUserId
-            }));
-          } else {
-            return ;
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching creator profile:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchCreatorProfile = async () => {
+  //     try {
+  //       if(user.role !== 'teacher') {
+  //         if(profileType !== 'teacher') {
+  //           const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/profile/${post.createdBy}`, {
+  //             withCredentials: true,
+  //             headers: {
+  //               'Content-Type': 'application/json',
+  //               'Access-Control-Allow-Credentials': true,
+  //             },
+  //           });
+  //           setCreatorProfile(response.data);
+  //           const currentUserId = userProfile.createdBy;
+  //           setLiked(post.likes.some(function(like){
+  //             return like.likedBy == currentUserId
+  //           }));
+  //         } else {
+  //           return ;
+  //         }
+  //       } else {
+  //         if(profileType === 'teacher'){
+  //           const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/teacher-profile/${post.createdBy}`, {
+  //             withCredentials: true,
+  //             headers: {
+  //               'Content-Type': 'application/json',
+  //               'Access-Control-Allow-Credentials': true,
+  //             },
+  //           });
+  //           setCreatorProfile(response.data);
+  //           const currentUserId = userProfile.createdBy;
+  //           setLiked(post.likes.some(function(like){
+  //             return like.likedBy == currentUserId
+  //           }));
+  //         } else {
+  //           return ;
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching creator profile:', error);
+  //     }
+  //   };
 
-    fetchCreatorProfile();
-  }, [post.createdBy, post.likes, profileType, user.role, userId, userProfile.createdBy]);
+  //   fetchCreatorProfile();
+  // }, [post.createdBy, post.likes, profileType, user.role, userId, userProfile.createdBy]);
 
   // useEffect(() => {
   //   // Check if the current user has liked this post
@@ -204,20 +204,18 @@ const Post = ({ post }) => {
   };
 
   return (
-    <div className="bg-white shadow-md p-6 rounded-lg mb-4">
+    <div className="bg-white p-6 mb-4">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center">
-          {creatorProfile && (
             <>
-              <img src={creatorProfile.profilePicture} alt="Profile" className="w-10 h-10 rounded-full mr-2" />
+              <img src={post.profilePicture} alt="Profile" className="w-10 h-10 rounded-full mr-2" />
               <div className="flex flex-col">
-                <p className="font-semibold">{creatorProfile.fullName}</p>
+                <p className="font-semibold">{post.fullName}</p>
                 <span className="text-gray-500">{renderTimeAgo(post.createdAt)}</span>
               </div>
             </>
-          )}
         </div>
-        {userProfile.createdBy === post.createdBy || user.role === 'teacher' && (
+        { user.role === 'teacher' || userProfile.createdBy === post.createdBy && (
           <div className="relative flex items-center">
             <AiOutlineEdit className="text-gray-500 hover:text-blue-500 m-2 cursor-pointer mr-2 w-6 h-6" onClick={() => handlePostEdit(post._id)} />
             <AiOutlineDelete className="text-gray-500 hover:text-red-500 m-2 cursor-pointer w-6 h-6" onClick={handleDeleteConfirmation} />
