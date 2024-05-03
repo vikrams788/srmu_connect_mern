@@ -22,7 +22,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/login', formData, {
+      const response = await axios.post('https://srmu-connect-mern-esjg.vercel.app/api/login', formData, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',

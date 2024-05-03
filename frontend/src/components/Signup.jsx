@@ -27,7 +27,7 @@ const Signup = () => {
     // }
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/send-otp`, { email }, {
+      const response = await axios.post(`https://srmu-connect-mern-esjg.vercel.app/api/send-otp`, { email }, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const Signup = () => {
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/signup`, {
+      const response = await axios.post(`https://srmu-connect-mern-esjg.vercel.app/api/signup`, {
         email,
         password,
         confirmPassword,

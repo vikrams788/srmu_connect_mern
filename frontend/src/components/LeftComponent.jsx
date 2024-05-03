@@ -11,7 +11,7 @@ const LeftComponent = () => {
       try {
 
           // Fetch user data based on createdBy field
-          const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/user`, {
+          const response = await axios.get(`https://srmu-connect-mern-esjg.vercel.app/api/user`, {
             withCredentials: true,
             headers: {
               'Content-Type': 'application/json',

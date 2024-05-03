@@ -10,7 +10,7 @@ const EditPost = () => {
       try {
         const postId = localStorage.getItem('editPostId');
         if (postId) {
-          const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/posts/${postId}`, {
+          const response = await axios.get(`https://srmu-connect-mern-esjg.vercel.app/api/posts/${postId}`, {
             withCredentials: true,
             headers: {
               'Content-Type': 'application/json',

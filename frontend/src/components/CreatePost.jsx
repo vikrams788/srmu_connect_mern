@@ -65,7 +65,7 @@ const CreatePost = ({post}) => {
 
     try {
       if(post) {
-        const response = await axios.put(`${import.meta.env.VITE_REACT_APP_API_URL}/api/posts/${post._id}`, data, {
+        const response = await axios.put(`https://srmu-connect-mern-esjg.vercel.app/api/posts/${post._id}`, data, {
           withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -85,7 +85,7 @@ const CreatePost = ({post}) => {
         console.log('Post updated successfully', response.data);
       }
       else {
-        const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/posts', data, {
+        const response = await axios.post('https://srmu-connect-mern-esjg.vercel.app/api/posts', data, {
           withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data',

@@ -29,7 +29,7 @@ function SignupMultipleUsers() {
   
       console.log('FormData:', multipleUsersFormData.userDataFile);
   
-      const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/bulk-user-upload', data, {
+      const response = await axios.post('https://srmu-connect-mern-esjg.vercel.app/api/bulk-user-upload', data, {
         withCredentials: true,
         headers: {
           'content-type': 'multipart/form-data',

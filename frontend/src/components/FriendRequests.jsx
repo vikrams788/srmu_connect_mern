@@ -20,7 +20,7 @@ const FriendRequests = () => {
     useEffect(() => {
         const fetchPendingRequests = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/pending-requests/${currentUserId}`, {
+                const response = await axios.get(`https://srmu-connect-mern-esjg.vercel.app/api/pending-requests/${currentUserId}`, {
                     withCredentials: true,
                     headers: {
                         'Content-Type': 'application/json',
@@ -37,14 +37,14 @@ const FriendRequests = () => {
         const fetchAllProfiles = async () => {
             try {
                 const [userProfilesResponse, teacherProfilesResponse] = await Promise.all([
-                    axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/all-profiles`, {
+                    axios.get(`https://srmu-connect-mern-esjg.vercel.app/api/all-profiles`, {
                         withCredentials: true,
                         headers: {
                             'Content-Type': 'application/json',
                             'Access-Control-Allow-Credentials': true,
                         },
                     }),
-                    axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/non-friend-profiles`, {
+                    axios.get(`https://srmu-connect-mern-esjg.vercel.app/api/non-friend-profiles`, {
                         withCredentials: true,
                         headers: {
                             'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ const FriendRequests = () => {
     const sendFriendRequest = async (recipientId) => {
         const senderId = currentUserId;
         try {
-            await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/friend-requests`, {
+            await axios.post(`https://srmu-connect-mern-esjg.vercel.app/api/friend-requests`, {
                 senderId,
                 recipientId,
                 fullName: currentUser.fullName,

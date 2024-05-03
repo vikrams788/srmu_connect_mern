@@ -24,7 +24,7 @@ const SingleChat = () => {
   const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
-    socket = io(import.meta.env.VITE_REACT_APP_API_URL);
+    socket = io('//srmu-connect-mern-esjg.vercel.app');
     socket.emit("setup", user);
     socket.on('connection', () => setSocketConnected(true))
 
@@ -36,7 +36,7 @@ const SingleChat = () => {
   useEffect(() => {
     const fetchChatInfo = async () => {
       try {
-        const chatResponse = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/chat/${anotherUserId}`, {
+        const chatResponse = await axios.get(`https://srmu-connect-mern-esjg.vercel.app/api/chat/${anotherUserId}`, {
             withCredentials: true,
             headers: {
               'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ const SingleChat = () => {
     const fetchMessages = async () => {
       try {
         if (chat && chat._id) {
-          const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/all-messages/${chat._id}`, {
+          const response = await axios.get(`https://srmu-connect-mern-esjg.vercel.app/api/all-messages/${chat._id}`, {
               withCredentials: true,
               headers: {
                 'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ const SingleChat = () => {
     if (!inputMessage.trim() || !chat) return;
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/send`, {
+      const response = await axios.post(`https://srmu-connect-mern-esjg.vercel.app/api/send`, {
         content: inputMessage,
         chatId: chat._id,
         fullName: user.fullName,

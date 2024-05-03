@@ -23,7 +23,7 @@ const EditTeacherProfile = () => {
 
   useEffect(() => {
     const fetchTeacherProfile = async () => {
-      const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/teacher-profile`, {
+      const response = await axios.get(`https://srmu-connect-mern-esjg.vercel.app/api/teacher-profile`, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const EditTeacherProfile = () => {
       formData.append('profilePicture', singleUserFormData.profilePicture);
 
       if(!fetchedProfile) {
-        const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/create-teacher-profile', formData, {
+        const response = await axios.post('https://srmu-connect-mern-esjg.vercel.app/api/create-teacher-profile', formData, {
           withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -82,7 +82,7 @@ const EditTeacherProfile = () => {
 
         console.log('Single user profile created:', response.data);
       } else {
-        const response = await axios.put(import.meta.env.VITE_REACT_APP_API_URL + '/api/edit-teacher-profile', formData, {
+        const response = await axios.put('https://srmu-connect-mern-esjg.vercel.app/api/edit-teacher-profile', formData, {
           withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data',

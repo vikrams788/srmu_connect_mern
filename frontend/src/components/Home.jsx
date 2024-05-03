@@ -19,7 +19,7 @@ function Home() {
       try {
         let response;
         if (user.role !== 'teacher') {
-          response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', {
+          response = await axios.get('https://srmu-connect-mern-esjg.vercel.app/api/profile', {
             withCredentials: true,
             headers: {
               'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ function Home() {
             },
           });
         } else {
-          response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/teacher-profile', {
+          response = await axios.get('https://srmu-connect-mern-esjg.vercel.app/api/teacher-profile', {
             withCredentials: true,
             headers: {
               'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ function Home() {
 
     const fetchPosts = async () => {
       try {
-        const userPostsResponse = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/my-posts', {
+        const userPostsResponse = await axios.get('https://srmu-connect-mern-esjg.vercel.app/api/my-posts', {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ function Home() {
           },
         });
 
-        const friendPostsResponse = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/posts/user/friends', {
+        const friendPostsResponse = await axios.get('https://srmu-connect-mern-esjg.vercel.app/api/posts/user/friends', {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',

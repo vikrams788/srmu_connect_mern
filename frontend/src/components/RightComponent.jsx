@@ -11,7 +11,7 @@ const RightComponent = () => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/all-chats', {
+        const response = await axios.get('https://srmu-connect-mern-esjg.vercel.app/api/all-chats', {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',

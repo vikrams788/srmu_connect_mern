@@ -41,7 +41,7 @@ const CreateGroup = ({ user }) => {
       setIsLoading(true);
 
       try {
-        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/search?query=${allUsersSearchQuery}`, {
+        const response = await axios.get(`https://srmu-connect-mern-esjg.vercel.app/api/search?query=${allUsersSearchQuery}`, {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',

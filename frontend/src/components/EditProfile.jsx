@@ -28,7 +28,7 @@ const EditProfileForm = () => {
     const fetchProfileData = async () => {
       try {
         if(!userId) {
-          const response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', {
+          const response = await axios.get('https://srmu-connect-mern-esjg.vercel.app/api/profile', {
             withCredentials: true,
             headers: {
               'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ const EditProfileForm = () => {
             setShowAdminFeatures(false);
           }
         } else {
-          const response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + `/api/profile/${userId}`, {
+          const response = await axios.get(`https://srmu-connect-mern-esjg.vercel.app/api/profile/${userId}`, {
             withCredentials: true,
             headers: {
               'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ const EditProfileForm = () => {
       formData.append('profilePicture', singleProfileFormData.profilePicture);
       console.log(profileData);
       if(profileData){
-        const response = await axios.put(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', formData, {
+        const response = await axios.put('https://srmu-connect-mern-esjg.vercel.app/api/profile', formData, {
           withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -119,7 +119,7 @@ const EditProfileForm = () => {
         });
         localStorage.setItem('profile', JSON.stringify(response.data));
       } else {
-        const response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/profile', formData, {
+        const response = await axios.post('https://srmu-connect-mern-esjg.vercel.app/api/profile', formData, {
           withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data',

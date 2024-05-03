@@ -36,7 +36,7 @@ const Post = ({ post }) => {
 
       if (post.isLiked === true) {
         // Unlike the post
-        await axios.delete(`${import.meta.env.VITE_REACT_APP_API_URL}/api/posts/${post._id}/unlike`, {
+        await axios.delete(`https://srmu-connect-mern-esjg.vercel.app/api/posts/${post._id}/unlike`, {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ const Post = ({ post }) => {
         console.log('Post unliked');
       } else {
         // Like the post
-        await axios.put(`${import.meta.env.VITE_REACT_APP_API_URL}/api/posts/${post._id}/like`, { userId: currentUserId, fullName }, {
+        await axios.put(`https://srmu-connect-mern-esjg.vercel.app/api/posts/${post._id}/like`, { userId: currentUserId, fullName }, {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ const Post = ({ post }) => {
       newComment.fullName = userProfile.fullName;
       newComment.profilePicture = userProfile.profilePicture;
 
-      const response = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/comments/${selectedPostId}`, newComment, {
+      const response = await axios.post(`https://srmu-connect-mern-esjg.vercel.app/api/comments/${selectedPostId}`, newComment, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',

@@ -35,7 +35,7 @@ const Profile = () => {
           postsEndpoint = `/api/posts/user/${userId}`;
         }
 
-        const profileResponse = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}${profileEndpoint}`, {
+        const profileResponse = await axios.get(`https://srmu-connect-mern-esjg.vercel.app${profileEndpoint}`, {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ const Profile = () => {
           },
         });
 
-        const postsResponse = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}${postsEndpoint}`, {
+        const postsResponse = await axios.get(`https://srmu-connect-mern-esjg.vercel.app${postsEndpoint}`, {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ const Profile = () => {
   //Send Friend Request
   const handleAddFriend = async () => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/friend-requests`, {
+      const response = await axios.post(`https://srmu-connect-mern-esjg.vercel.app/api/friend-requests`, {
         senderId: currentUserId,
         recipientId: userData.createdBy,
         fullName: currentUser.fullName,
@@ -118,7 +118,7 @@ const Profile = () => {
 
   const handleRemoveFriend = async () => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/api/remove-friend`, {
+      const response = await axios.post(`https://srmu-connect-mern-esjg.vercel.app/api/remove-friend`, {
         userId: currentUserId,
         friendId: userData.createdBy
       }, {

@@ -7,7 +7,7 @@ const PendingRequestItem = ({ request }) => {
         const currentUser = JSON.parse(localStorage.getItem('user'))
 
         try {
-            const response = await axios.put(`${import.meta.env.VITE_REACT_APP_API_URL}/api/friend-requests/${requestId}`, {
+            const response = await axios.put(`https://srmu-connect-mern-esjg.vercel.app/api/friend-requests/${requestId}`, {
                 role: request.role,
                 fullName: request.fullName,
                 profilePicture: request.profilePicture,
@@ -41,7 +41,7 @@ const PendingRequestItem = ({ request }) => {
         const requestId = request.userId;
 
         try {
-            const response = await axios.delete(`${import.meta.env.VITE_REACT_APP_API_URL}/api/friend-requests/${requestId}`, {
+            const response = await axios.delete(`https://srmu-connect-mern-esjg.vercel.app/api/friend-requests/${requestId}`, {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json',

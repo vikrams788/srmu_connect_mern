@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 const DeletePost = ({ postId, onDelete, onCancel }) => {
   const handleDelete = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_REACT_APP_API_URL}/api/posts/${postId}`, {
+      await axios.delete(`https://srmu-connect-mern-esjg.vercel.app/api/posts/${postId}`, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',

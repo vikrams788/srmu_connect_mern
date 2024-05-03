@@ -23,7 +23,7 @@ const TeacherEditProfile = () => {
   useEffect(() => {
     const fetchTeacherProfile = async () => {
       try {
-        const response = await axios.get(import.meta.env.VITE_REACT_APP_API_URL + '/api/teacher/profile', {
+        const response = await axios.get('https://srmu-connect-mern-esjg.vercel.app/api/teacher/profile', {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ const TeacherEditProfile = () => {
     try {
       let response;
       if (teacherProfile) {
-        response = await axios.put(import.meta.env.VITE_REACT_APP_API_URL + '/api/teacher/profile', data, {
+        response = await axios.put('https://srmu-connect-mern-esjg.vercel.app/api/teacher/profile', data, {
           withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -71,7 +71,7 @@ const TeacherEditProfile = () => {
           draggable: true,
         });
       } else {
-        response = await axios.post(import.meta.env.VITE_REACT_APP_API_URL + '/api/teacher/profile', data, {
+        response = await axios.post('https://srmu-connect-mern-esjg.vercel.app/api/teacher/profile', data, {
           withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data',

@@ -11,7 +11,7 @@ const Comments = ({ postId, userRole }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/comments/${postId}`, {
+        const response = await axios.get(`https://srmu-connect-mern-esjg.vercel.app/api/comments/${postId}`, {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
@@ -30,14 +30,14 @@ const Comments = ({ postId, userRole }) => {
 
   const handleDeleteComment = async (commentId) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_REACT_APP_API_URL}/api/comments/${commentId}`, {
+      await axios.delete(`https://srmu-connect-mern-esjg.vercel.app/api/comments/${commentId}`, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Credentials': true,
         },
       });
-      await axios.put(`${import.meta.env.VITE_REACT_APP_API_URL}/api/posts/${postId}/delete-comment`, {
+      await axios.put(`https://srmu-connect-mern-esjg.vercel.app/api/posts/${postId}/delete-comment`, {
         commentId,
       }, {
         withCredentials: true,
