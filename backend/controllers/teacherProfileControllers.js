@@ -1,6 +1,7 @@
 const TeacherProfile = require('../models/TeacherProfile');
 const User = require('../models/TeacherProfile');
 const cloudinary = require('cloudinary').v2;
+const Profile = require('../models/Profile');
 
 exports.createTeacherProfile = async (req, res) => {
     try {
@@ -180,3 +181,34 @@ exports.getAllNonFriendProfiles = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+exports.getAllUserProfiles = async (req, res) => {
+    try {
+        const { query } = req.query;
+
+        const currentUser = req.user;
+    
+        const regularProfiles = await Profile.find({
+            createdBy: { $ne: currentUser.userId },
+            fullName: { $regex: new RegExp(query, 'i') },
+            course: { $regex: new RegExp(query, 'i') },
+            rollNo: { $regex: new RegExp(query, 'i') },
+            semester: { $regex: new RegExp(query, 'i') },
+        });
+      
+        const teacherProfiles = await TeacherProfile.find({
+            createdBy: { $ne: currentUser.userId },
+            fullName: { $regex: new RegExp(query, 'i') },
+            department: { $regex: new RegExp(query, 'i') },
+            facultyRoom: { $regex: new RegExp(query, 'i') },
+            employeeId: { $regex: new RegExp(query, 'i') },
+        });
+      
+        const allProfiles = regularProfiles.concat(teacherProfiles);
+      
+        res.json(allProfiles);
+    } catch (error) {
+        console.error('Error searching profiles:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}

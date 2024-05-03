@@ -10,9 +10,7 @@ import { toast } from 'react-toastify';
 
 const Post = ({ post }) => {
   const navigate = useNavigate();
-  // const [creatorProfile, setCreatorProfile] = useState(null);
   const [liked, setLiked] = useState(post.isLiked);
-  // const { userId, profileType } = useParams();
   const [showComments, setShowComments] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [newComment, setNewComment] = useState({
@@ -23,61 +21,6 @@ const Post = ({ post }) => {
   const userProfile = JSON.parse(localStorage.getItem('profile'));
   const user = JSON.parse(localStorage.getItem('user'));
   const [showDeletePost, setShowDeletePost] = useState(false);
-
-  //Fetch the profile of the creator
-  // useEffect(() => {
-  //   const fetchCreatorProfile = async () => {
-  //     try {
-  //       if(user.role !== 'teacher') {
-  //         if(profileType !== 'teacher') {
-  //           const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/profile/${post.createdBy}`, {
-  //             withCredentials: true,
-  //             headers: {
-  //               'Content-Type': 'application/json',
-  //               'Access-Control-Allow-Credentials': true,
-  //             },
-  //           });
-  //           setCreatorProfile(response.data);
-  //           const currentUserId = userProfile.createdBy;
-  //           setLiked(post.likes.some(function(like){
-  //             return like.likedBy == currentUserId
-  //           }));
-  //         } else {
-  //           return ;
-  //         }
-  //       } else {
-  //         if(profileType === 'teacher'){
-  //           const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/teacher-profile/${post.createdBy}`, {
-  //             withCredentials: true,
-  //             headers: {
-  //               'Content-Type': 'application/json',
-  //               'Access-Control-Allow-Credentials': true,
-  //             },
-  //           });
-  //           setCreatorProfile(response.data);
-  //           const currentUserId = userProfile.createdBy;
-  //           setLiked(post.likes.some(function(like){
-  //             return like.likedBy == currentUserId
-  //           }));
-  //         } else {
-  //           return ;
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching creator profile:', error);
-  //     }
-  //   };
-
-  //   fetchCreatorProfile();
-  // }, [post.createdBy, post.likes, profileType, user.role, userId, userProfile.createdBy]);
-
-  // useEffect(() => {
-  //   // Check if the current user has liked this post
-  //   const currentUserId = userProfile.userId;
-  //   setLiked(post.likes.some(function(like){
-  //     return like.likedBy == currentUserId
-  //   }));
-  // }, [post.likes, userProfile.userId]);
 
   //Render time ago
   const renderTimeAgo = (createdAt) => {

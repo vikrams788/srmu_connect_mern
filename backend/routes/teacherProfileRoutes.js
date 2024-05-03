@@ -12,5 +12,6 @@ router.put('/edit-teacher-profile', upload.single("profilePicture"), authMiddlew
 router.get('/all-teacher-profiles', authMiddleware, teacherProfileControllers.getAllTeacherProfiles);
 router.get('/search-teacher-profiles', authMiddleware, teacherProfileControllers.searchTeacherProfiles);
 router.get('/non-friend-profiles', authMiddleware, teacherProfileControllers.getAllNonFriendProfiles);
+router.get('/search', authMiddleware, teacherProfileControllers.getAllUserProfiles);
 
 module.exports = router;

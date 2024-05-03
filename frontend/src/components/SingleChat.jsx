@@ -5,6 +5,8 @@ import RightComponent from './RightComponent';
 import Footer from '../partials/Footer';
 import LeftComponent from './LeftComponent';
 import Header from '../partials/Header';
+import CreateGroup from './CreateGroup';
+import { AiOutlineClose } from 'react-icons/ai'
 
 var socket, selectedChatCompare;
 
@@ -13,15 +15,22 @@ const SingleChat = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [socketConnected, setSocketConnected] = useState(false);
   const [chat, setChat] = useState(null)
+  const [showAdminFeatures, setShowAdminFeatures] = useState(false);
+  const [otherUser, setOtherUser] = useState(null);
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
+
   const anotherUserId = localStorage.getItem('anotherUserId');
   const profile = JSON.parse(localStorage.getItem('profile'));
   const user = JSON.parse(localStorage.getItem('user'));
-  const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
   useEffect(() => {
     socket = io(import.meta.env.VITE_REACT_APP_API_URL);
     socket.emit("setup", user);
     socket.on('connection', () => setSocketConnected(true))
+
+    return () => {
+      socket.disconnect();
+    }
   }, []);
 
   useEffect(() => {
@@ -35,6 +44,9 @@ const SingleChat = () => {
             },
           });
         setChat(chatResponse.data);
+
+        const otherUserInfo = chatResponse.data.users.find(u => u._id !== user._id);
+        setOtherUser(otherUserInfo);
       } catch (error) {
         console.error('Error fetching chat information:', error);
       }
@@ -71,7 +83,7 @@ const SingleChat = () => {
       setShowAdminFeatures(false);
     }
     
-  }, [anotherUserId, chat, user.role]);
+  }, [anotherUserId, chat, user._id, user.role]);
 
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
@@ -116,6 +128,14 @@ const SingleChat = () => {
     }
   };
 
+  const handleCreateGroup = () => {
+    setShowCreateGroup(true);
+  };
+
+  const handleCloseCreateGroup = () => {
+    setShowCreateGroup(false);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header isAdmin={showAdminFeatures}/>
@@ -124,6 +144,19 @@ const SingleChat = () => {
           <LeftComponent />
         </div>
         <div className="w-3/5 flex flex-col p-2">
+        {otherUser && (
+            <div className="flex justify-around items-center mb-4">
+              <div className='flex items-center'>
+                <img
+                  src={otherUser.profilePicture}
+                  alt={otherUser.fullName}
+                  className="w-10 h-10 rounded-full mr-3"
+                />
+                <h2 className="text-lg font-semibold">{otherUser.fullName}</h2>
+              </div>
+              <button type='button' className='bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-r focus:outline-none' onClick={handleCreateGroup}>+ New Group</button>
+            </div>
+          )}
         {messages.length > 0 ? (
           <div className="flex-grow p-4 bg-white overflow-y-auto" style={{ maxHeight: '75vh', paddingRight: '16px', marginRight: '-16px' }}>
             <div className="scrollbar-hide">
@@ -178,6 +211,16 @@ const SingleChat = () => {
           <RightComponent />
         </div>
       </div>
+      {showCreateGroup && (
+        <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-4 rounded-lg flex flex-col shadow-lg">
+            <button onClick={handleCloseCreateGroup} className="relative mt-2 ml-auto focus:outline-none">
+              <AiOutlineClose className="text-black hover:text-white w-6 h-6 hover:bg-red-500 rounded" />
+            </button>
+            <CreateGroup onClose={handleCloseCreateGroup} user={user} />
+          </div>
+        </div>
+      )}
       <Footer />
     </div>
   );

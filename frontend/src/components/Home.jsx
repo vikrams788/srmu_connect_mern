@@ -94,7 +94,7 @@ function Home() {
           <div className="w-full md:w-2/3 px-4 overflow-y-auto h-screen custom-scrollbar">
             {!userData ? (
               <div className="bg-white p-6 mb-6">
-                <p>No profile found, <a href="/edit-profile" className="text-blue-500 hover:text-blue-700">Create one now!</a></p>
+                { user.role === 'teacher' ? (<p>No profile found, <a href="/edit-teacher-profile" className="text-blue-500 hover:text-blue-700">Create one now!</a></p>) : (<p>No profile found, <a href="/edit-profile" className="text-blue-500 hover:text-blue-700">Create one now!</a></p>)}
               </div>
             )
             : (

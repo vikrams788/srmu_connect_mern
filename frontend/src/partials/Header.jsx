@@ -152,7 +152,7 @@ function Header({isAdmin}) {
               <div ref={dropdownRef} className="absolute z-10 top-16 p-4 right-0 bg-white border rounded-md shadow-lg py-1 dropdown-menu">
                 <Link to="/" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Home</Link>
                 {role !== 'teacher' ? (<Link to="/profile" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Profile</Link>) : (<Link to="/teacher-profile" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Profile</Link>)}
-                <Link to="/friend-requests" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Friends</Link>
+                <Link to="/friend-requests" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Find Friends</Link>
                 <Link to="/chat" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Chat</Link>
                 <Link to="/e-library" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Library</Link>
                 {isAdmin === true && (<Link to="/add-users" className="block px-8 py-2 mx-2 text-gray-800 hover:bg-gray-100">Add Users</Link>)}

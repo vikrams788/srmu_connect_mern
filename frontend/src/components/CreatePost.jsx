@@ -52,8 +52,8 @@ const CreatePost = ({post}) => {
       data.append('text', formData.text);
       data.append('link', formData.link);
       data.append('postType', formData.postType);
-      data.append('fullName', user.fullName);
-      data.append('profilePicture', user.profilePicture);
+      data.append('fullName', userProfile.fullName);
+      data.append('profilePicture', userProfile.profilePicture);
       if (formData.image) {
         data.append('image', formData.image);
       } else if (formData.video) {

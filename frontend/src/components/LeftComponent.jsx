@@ -43,10 +43,10 @@ const LeftComponent = () => {
 
   return (
     <div className="bg-white p-4 w-full">
-      <h2 className="text-lg font-bold mb-4">Friends List</h2>
+      <h2 className="text-lg font-bold mb-4 border-black border-b-2">Friends List</h2>
       <ul>
         {friends.map((friend) => (
-          <li key={friend.userId} className="mb-2 flex items-center hover:bg-gray-100 border-black border-y-2 cursor-pointer px-2 py-4" onClick={() => handleFriendClick(friend)}>
+          <li key={friend.userId} className="mb-2 flex items-center hover:bg-gray-100 border-black border-b-2 cursor-pointer px-2 py-4" onClick={() => handleFriendClick(friend)}>
             <img src={friend.profilePicture} alt={friend.fullName} className="w-8 h-8 rounded-full mr-2" />
             <p>{friend.fullName}</p>
           </li>

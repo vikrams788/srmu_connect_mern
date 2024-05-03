@@ -43,13 +43,13 @@ const RightComponent = () => {
 
   return (
     <div className="bg-white p-4">
-      <h2 className="text-xl font-semibold mb-4">Chats</h2>
+      <h2 className="text-xl font-semibold mb-4 border-black border-b-2">Chats</h2>
       <div className="overflow-y-auto max-h-96">
         {chats.length === 0 ? (
           <p className="text-gray-600 text-center">No chats to show</p>
         ) : (
           chats.map((chat) => (
-            <div key={chat._id} className="mb-4 p-2 hover:bg-gray-100 border-y-2 border-black cursor-pointer" onClick={handleChat}>
+            <div key={chat._id} className="mb-4 p-2 hover:bg-gray-100 border-black border-b-2 cursor-pointer" onClick={handleChat}>
               <div className="flex items-center mt-2">
                 {!chat.isGroupChat && (
                   <img
