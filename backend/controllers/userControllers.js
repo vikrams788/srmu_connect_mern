@@ -32,8 +32,8 @@ exports.login = async (req, res) => {
         const token2 = jwt.sign(payload, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
 
         res.cookie('token', token, { 
-            httpOnly: false,
-            secure: false,
+            httpOnly: true,
+            secure: true,
             sameSite: 'None',
             expires: new Date(Date.now() + 10800000),
         });
@@ -128,8 +128,8 @@ exports.verifyOTP = async (req, res) => {
         const token2 = jwt.sign(payload, process.env.JWT_SECRETKEY, { expiresIn: '2d' });
 
         res.cookie('token', token, { 
-            httpOnly: false,
-            secure: false,
+            httpOnly: true,
+            secure: true,
             sameSite: 'None',
             expires: new Date(Date.now() + 10800000),
         });
